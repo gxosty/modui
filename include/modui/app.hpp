@@ -16,7 +16,7 @@ namespace modui
 		App();
 		App(const std::string& window_title);
 
-		void run();
+		// void run();
 		virtual ui::Widget* build() = 0;
 
 		App* set_window_title(const std::string& window_title);
@@ -26,17 +26,17 @@ namespace modui
 
 		bool is_rendering();
 
+		void pre_render();
+		void render();
+		void post_render();
+
 	private:
 		ui::Widget* _root_widget;
-		bool _imgui_window;
+		bool _fullscreen;
 		std::string _window_title;
 		ThemeManager _theme_manager;
 		Theme* _current_theme;
 		bool _prerendered;
 		bool _rendering;
-
-		void _pre_render();
-		void _render();
-		void _post_render();
 	};
 }

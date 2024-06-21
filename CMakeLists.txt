@@ -12,8 +12,6 @@ set(MODUI_DEMO_EXE_NAME modui_demo)
 
 option(MODUI_BUILD_DEMO "Build demo executable" ON)
 
-add_definitions(-DMODUI_BACKEND_SDL2)
-
 project(${PROJECT_NAME})
 
 add_library( ${MODUI_LIB_NAME} SHARED
@@ -46,17 +44,25 @@ add_library( ${MODUI_LIB_NAME} SHARED
 
 target_link_libraries( ${MODUI_LIB_NAME}
 	imgui
-	dl
-	SDL2
-	GL
+	opengl32.lib
+	d3dcompiler
+	dwmapi
 )
 
 if (MODUI_BUILD_DEMO)
+	# Windows only!
+
 	add_executable( ${MODUI_DEMO_EXE_NAME}
 		src/demo.cxx
 	)
 
 	target_link_libraries( ${MODUI_DEMO_EXE_NAME}
 		${MODUI_LIB_NAME}
+	)
+
+	add_custom_command(
+		TARGET ${MODUI_DEMO_EXE_NAME} 
+		POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/lib/libimgui.dll .
 	)
 endif()
