@@ -24,6 +24,8 @@ add_library( ${MODUI_LIB_NAME} SHARED
 	src/modui/ui/button/basebutton.cxx
 	src/modui/ui/button/button.cxx
 
+	src/modui/ui/card/card.cxx
+
 	src/modui/ui/checkbox/checkbox.cxx
 
 	src/modui/ui/layout/linearlayout.cxx

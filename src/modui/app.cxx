@@ -164,6 +164,11 @@ namespace modui
 		return *this->_current_theme;
 	}
 
+	ImDrawListSplitter& App::get_draw_list_splitter()
+	{
+		return this->_draw_list_splitter;
+	}
+
 	bool App::is_rendering()
 	{
 		return this->_rendering;

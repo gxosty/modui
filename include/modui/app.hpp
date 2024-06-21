@@ -3,6 +3,7 @@
 #include "core/basewidget.hpp"
 #include "ui/widget.hpp"
 #include "theme.hpp"
+#include <imgui/imgui.h>
 
 #include <string>
 
@@ -23,6 +24,7 @@ namespace modui
 
 		ThemeManager& get_theme_manager();
 		Theme& get_current_theme();
+		ImDrawListSplitter& get_draw_list_splitter();
 
 		bool is_rendering();
 
@@ -38,5 +40,7 @@ namespace modui
 		Theme* _current_theme;
 		bool _prerendered;
 		bool _rendering;
+
+		ImDrawListSplitter _draw_list_splitter;
 	};
 }

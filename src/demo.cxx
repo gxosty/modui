@@ -3,6 +3,7 @@
 #include <modui/ui/screen/screenmanager.hpp>
 #include <modui/ui/layout/linearlayout.hpp>
 #include <modui/ui/button/button.hpp>
+#include <modui/ui/card/card.hpp>
 #include <modui/ui/slider/slider.hpp>
 #include <modui/ui/checkbox/checkbox.hpp>
 #include <modui/ui/text/text.hpp>
@@ -76,6 +77,7 @@ public:
 				ui::Screen::init("screen1")
 					->add_widget(
 						ui::LinearLayout::init()
+							->set_padding(DP(10))
 							->set_spacing(DP(10))
 							->add_widget(
 								ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
@@ -90,7 +92,7 @@ public:
 											->on_slide(MODUI_CALLBACK(this) {
 												ui::Text* text = (ui::Text*)this->screen_manager->find_widget_by_id("slider_value");
 												ui::Slider* slider = (ui::Slider*)this_widget;
-												slider->set_value(round(slider->get_value()));
+												// slider->set_value(round(slider->get_value()));
 												text->set_text(std::to_string(slider->get_value()));
 											})
 									)
@@ -112,6 +114,20 @@ public:
 							)
 							->add_widget(
 								CustomWidget::init()
+							)
+							->add_widget(
+								ui::FilledCard::init()
+									->set_padding(DP(10))
+									->set_spacing(DP(10))
+									// ->set_size_x(DP(200))
+									->add_widget(
+										ui::Text::init("Card Title")
+											->set_font_size(DP(10))
+									)
+									->add_widget(
+										ui::Button::init("Button 2")
+											->set_size_x(DP(50))
+									)
 							)
 					)
 			)
@@ -245,7 +261,7 @@ int main()
 	}
 
 	app->post_render();
-	
+
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
