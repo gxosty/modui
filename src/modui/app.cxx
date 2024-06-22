@@ -115,6 +115,18 @@ namespace modui
 		return this;
 	}
 
+	App* App::set_window_size(Vec2 window_size)
+	{
+		this->_window_size = window_size;
+		return this;
+	}
+
+	App* App::set_window_fullscreen(bool fullscreen)
+	{
+		this->_fullscreen = fullscreen;
+		return this;
+	}
+
 	void App::pre_render()
 	{
 		if (this->_prerendered) return;
@@ -123,6 +135,16 @@ namespace modui
 		this->_root_widget = this->build()->build_widget();
 		this->_root_widget->pre_render();
 		modui::internal::__set_current_app(nullptr);
+
+		bool opened = false;
+
+		if (!this->_fullscreen)
+			ImGui::SetNextWindowSize(this->_window_size);
+		
+		ImGui::Begin(this->_window_title.c_str(), &opened);
+		this->_window = ImGui::GetCurrentWindow();
+		ImGui::End();
+
 		this->_prerendered = true;
 	}
 
@@ -162,6 +184,9 @@ namespace modui
 		if (!ImGui::Begin(this->_window_title.c_str(), NULL, window_flags))
 		{
 			ImGui::End();
+
+			ImGui::PopStyleVar(9);
+			ImGui::PopStyleColor(2);
 			return;
 		}
 

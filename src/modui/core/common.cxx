@@ -12,7 +12,7 @@ namespace modui
 
 	void set_screen_density(float density)
 	{
-		this->__screen_density = density;
+		__screen_density = density;
 	}
 
 	namespace utils

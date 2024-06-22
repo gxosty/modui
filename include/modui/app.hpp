@@ -21,6 +21,8 @@ namespace modui
 		virtual ui::Widget* build() = 0;
 
 		App* set_window_title(const std::string& window_title);
+		App* set_window_size(Vec2 window_size);
+		App* set_window_fullscreen(bool fullscreen);
 
 		ThemeManager& get_theme_manager();
 		Theme& get_current_theme();
@@ -35,9 +37,11 @@ namespace modui
 		void post_render();
 
 	private:
+		ImGuiWindow* _window;
 		ui::Widget* _root_widget;
 		bool _fullscreen;
 		std::string _window_title;
+		Vec2 _window_size; // only when not fullscreen
 		ThemeManager _theme_manager;
 		Theme* _current_theme;
 		bool _prerendered;

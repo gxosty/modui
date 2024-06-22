@@ -25,7 +25,11 @@ namespace ui = modui::ui;
 class MyApp : public modui::App
 {
 public:
-	MyApp() : modui::App("MyApp") {}
+	MyApp() : modui::App("MyApp")
+	{
+		this->set_window_fullscreen(false);
+		this->set_window_size(Vec2(600, 300));
+	}
 
 	virtual ui::Widget* build() override
 	{
