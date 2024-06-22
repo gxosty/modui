@@ -1,12 +1,5 @@
 #include <modui/app.hpp>
-#include <modui/ui/screen/screen.hpp>
-#include <modui/ui/screen/screenmanager.hpp>
-#include <modui/ui/layout/linearlayout.hpp>
-#include <modui/ui/button/button.hpp>
-#include <modui/ui/card/card.hpp>
-#include <modui/ui/slider/slider.hpp>
-#include <modui/ui/checkbox/checkbox.hpp>
-#include <modui/ui/text/text.hpp>
+#include <modui/ui/widgets.hpp>
 
 #include <iostream>
 #include <cmath>
@@ -42,80 +35,98 @@ public:
 		this->screen_manager->add(
 			ui::Screen::init("demo_screen1")
 				->add(
-					ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
-						->set_padding(DP(5))
-						->set_spacing(DP(5))
+					ui::ScrollLayout::init()
 						->add(
-							ui::Text::init("ModUI Demo"),
-							
-							ui::Button::init("Button"),
-							
-							ui::Button::init("width dp(150) button")
-								->set_size_x(DP(150)),
-							
-							ui::Button::init("Full width button")
-								->set_size_x(MODUI_SIZE_WIDTH_FULL),
-
-							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-								->set_spacing(DP(5))
-								->set_size_y(0.0f)
-								->add(
-									ui::Text::init("Checkboxes")
-										->set_size_y(DP(20)),
-
-									ui::Checkbox::init(),
-									ui::Checkbox::init()
-								),
-
-							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-								->set_spacing(DP(5))
-								->set_size_y(0.0f)
-								->add(
-									ui::Text::init("Slider")
-										->set_size_y(DP(20)),
-
-									ui::Slider::init(0.0f, 100.0f)
-										->on_slide(MODUI_CALLBACK(this) {
-											ui::Text* text = (ui::Text*)this->screen_manager->find_widget_by_id("slider_value");
-											ui::Slider* slider = (ui::Slider*)this_widget;
-
-											text->set_text("Slider value: " + std::to_string(slider->get_value()));
-										})
-								),
-
-							ui::Text::init("Slider value: 0.0")
-								->set_id("slider_value"),
-
-							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+								->set_padding(DP(5))
 								->set_spacing(DP(5))
 								->add(
-									ui::FilledCard::init()
-										// ->set_size_x(DP(150))
-										->set_size_y(0.0f) // 0.0f means adaptive height
-										->set_padding(DP(10))
+									ui::Text::init("ModUI Demo"),
+									
+									ui::Button::init("Button"),
+									
+									ui::Button::init("width dp(150) button")
+										->set_size_x(DP(150)),
+									
+									ui::Button::init("Full width button")
+										->set_size_x(MODUI_SIZE_WIDTH_FULL),
+
+									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
 										->set_spacing(DP(5))
+										->set_size_y(0.0f)
 										->add(
-											ui::Text::init("Card Title 1")
-												->set_font_size(DP(18)),
+											ui::Text::init("Checkboxes")
+												->set_size_y(DP(20)),
 
-											ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
-
-											ui::Button::init("Open")
+											ui::Checkbox::init(),
+											ui::Checkbox::init()
 										),
 
-									ui::FilledCard::init()
-										// ->set_size_x(DP(150))
+									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+										->set_spacing(DP(5))
 										->set_size_y(0.0f)
-										->set_padding(DP(10))
+										->add(
+											ui::Text::init("Slider")
+												->set_size_y(DP(20)),
+
+											ui::Slider::init(0.0f, 100.0f)
+												->on_slide(MODUI_CALLBACK(this) {
+													ui::Text* text = (ui::Text*)this->screen_manager->find_widget_by_id("slider_value");
+													ui::Slider* slider = (ui::Slider*)this_widget;
+
+													text->set_text("Slider value: " + std::to_string(slider->get_value()));
+												})
+										),
+
+									ui::Text::init("Slider value: 0.0")
+										->set_id("slider_value"),
+
+									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
 										->set_spacing(DP(5))
 										->add(
-											ui::Text::init("Card Title 2")
-												->set_font_size(DP(18)),
+											ui::FilledCard::init()
+												// ->set_size_x(DP(150))
+												->set_size_y(0.0f) // 0.0f means adaptive height
+												->set_padding(DP(10))
+												->set_spacing(DP(5))
+												->add(
+													ui::Text::init("Card Title 1")
+														->set_font_size(DP(18)),
 
-											ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
+													ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
 
-											ui::Button::init("Open")
-										)
+													ui::Button::init("Open")
+												),
+
+											ui::FilledCard::init()
+												// ->set_size_x(DP(150))
+												->set_size_y(0.0f)
+												->set_padding(DP(10))
+												->set_spacing(DP(5))
+												->add(
+													ui::Text::init("Card Title 2")
+														->set_font_size(DP(18)),
+
+													ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
+
+													ui::Button::init("Open")
+												)
+										),
+
+									ui::Button::init("Toggle theme")
+										->on_release(MODUI_CALLBACK(this) {
+											if (!this->dark_theme)
+											{
+												this->set_current_theme(DEFAULT_THEME_DARK);
+												this->dark_theme = true;
+											}
+											else
+											{
+												this->set_current_theme(DEFAULT_THEME_LIGHT);
+												this->dark_theme = false;
+											}
+										})
+
 								)
 						)
 				)
@@ -124,6 +135,7 @@ public:
 
 private:
 	ui::ScreenManager* screen_manager;
+	bool dark_theme = false;
 };
 
 

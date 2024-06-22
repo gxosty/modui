@@ -84,19 +84,20 @@ namespace modui::ui
 			1.0f
 		);
 
-		Col4 fill_color = utils::mix(
-			utils::Col32to4(theme().primary),
-			utils::add_button_pressed_layer(
-				utils::Col32to4(theme().primary),
-				utils::Col32to4(theme().on_primary)
-			),
-			this->_press_factor
-		);
+		Col4 fill_color = utils::Col32to4(theme().primary);
+		Col32 ripple_color = (theme().on_primary & 0xFFFFFF) | (unsigned(0xFF * this->_press_factor * 0.1f) << 24);
 
 		draw_list->AddRectFilled(
 			pos,
 			pos + size,
 			utils::Col4to32(fill_color),
+			this->_rounding
+		);
+
+		draw_list->AddRectFilled(
+			pos,
+			pos + size,
+			ripple_color,
 			this->_rounding
 		);
 

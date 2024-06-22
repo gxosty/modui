@@ -26,6 +26,8 @@ namespace modui
 		Theme& get_current_theme();
 		ImDrawListSplitter& get_draw_list_splitter();
 
+		void set_current_theme(const std::string& theme_name);
+
 		bool is_rendering();
 
 		void pre_render();

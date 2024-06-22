@@ -55,16 +55,11 @@ namespace modui::ui
 			1.0f
 		);
 
-		Col4 outline_color, fill_color, ripple_color;
+		Col4 outline_color, fill_color;
+		Col32 ripple_color;
 
-		ripple_color = outline_color = utils::mix(
-			utils::Col32to4(0x0),
-			utils::add_button_pressed_layer(
-				utils::Col32to4(0x0),
-				utils::Col32to4(theme().on_primary)
-			),
-			this->_press_factor
-		);
+		ripple_color = (theme().primary & 0xFFFFFF) | (unsigned(0xFF * this->_press_factor * 0.1f) << 24);
+		outline_color = utils::Col32to4(ripple_color);
 
 		if (this->_state)
 		{
@@ -87,7 +82,7 @@ namespace modui::ui
 
 		Vec2 box_pos = pos + (size - box_size) / 2.0f;
 
-		draw_list->AddRectFilled(pos, pos + size, utils::Col4to32(ripple_color), 99999.0f);
+		draw_list->AddRectFilled(pos, pos + size, ripple_color, 99999.0f);
 
 		draw_list->AddRectFilled(box_pos, box_pos + box_size, utils::Col4to32(fill_color), this->_rounding);
 		draw_list->AddRect(box_pos, box_pos + box_size, utils::Col4to32(outline_color), this->_rounding, 0, MODUI_WIDGET_OUTLINE_WIDTH);

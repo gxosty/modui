@@ -29,6 +29,7 @@ add_library( ${MODUI_LIB_NAME} SHARED
 	src/modui/ui/checkbox/checkbox.cxx
 
 	src/modui/ui/layout/linearlayout.cxx
+	src/modui/ui/layout/scrolllayout.cxx
 
 	src/modui/ui/screen/screen.cxx
 	src/modui/ui/screen/screenmanager.cxx

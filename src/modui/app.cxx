@@ -16,8 +16,45 @@ namespace modui
 		_prerendered{false},
 		_rendering{false}
 	{
-		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_NAME)));
-		this->_current_theme = &this->_theme_manager.get(std::string(DEFAULT_THEME_NAME));
+		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_LIGHT)));
+		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_DARK)));
+
+		Theme& dark_theme = this->_theme_manager.get(DEFAULT_THEME_DARK);
+
+		dark_theme().primary                   = MODUI_COLOR_HEX(0xFFD0BCFF);
+		dark_theme().on_primary                = MODUI_COLOR_HEX(0xFF381E72);
+		dark_theme().primary_container         = MODUI_COLOR_HEX(0xFF4F378B);
+		dark_theme().on_primary_container      = MODUI_COLOR_HEX(0xFFEADDFF);
+
+		dark_theme().secondary                 = MODUI_COLOR_HEX(0xFFCCC2DC);
+		dark_theme().on_secondary              = MODUI_COLOR_HEX(0xFF332D41);
+		dark_theme().secondary_container       = MODUI_COLOR_HEX(0xFF4A4458);
+		dark_theme().on_secondary_container    = MODUI_COLOR_HEX(0xFFE8DEF8);
+
+		dark_theme().tertiary                  = MODUI_COLOR_HEX(0xFFEFB8C8);
+		dark_theme().on_tertiary               = MODUI_COLOR_HEX(0xFF492532);
+		dark_theme().tertiary_container        = MODUI_COLOR_HEX(0xFF633B48);
+		dark_theme().on_tertiary_container     = MODUI_COLOR_HEX(0xFFFFD8E4);
+
+		dark_theme().error                     = MODUI_COLOR_HEX(0xFFF2B8B5);
+		dark_theme().on_error                  = MODUI_COLOR_HEX(0xFF601410);
+		dark_theme().error_container           = MODUI_COLOR_HEX(0xFF8C1D18);
+		dark_theme().on_error_container        = MODUI_COLOR_HEX(0xFFF9DEDC);
+
+		dark_theme().surface                   = MODUI_COLOR_HEX(0xFF141218);
+		dark_theme().on_surface                = MODUI_COLOR_HEX(0xFFE6E0E9);
+		dark_theme().surface_variant           = MODUI_COLOR_HEX(0xFF49454F);
+		dark_theme().on_surface_variant        = MODUI_COLOR_HEX(0xFFCAC4D0);
+		dark_theme().surface_container_highest = MODUI_COLOR_HEX(0xFF36343B);
+		dark_theme().surface_container_high    = MODUI_COLOR_HEX(0xFF2B2930);
+		dark_theme().surface_container         = MODUI_COLOR_HEX(0xFF211F26);
+		dark_theme().surface_container_low     = MODUI_COLOR_HEX(0xFF1D1B20);
+		dark_theme().surface_container_lowest  = MODUI_COLOR_HEX(0xFF0F0D13);
+		dark_theme().inverse_surface           = MODUI_COLOR_HEX(0xFFE6E0E9);
+		dark_theme().inverse_on_surface        = MODUI_COLOR_HEX(0xFF322F35);
+		dark_theme().surface_tint              = MODUI_COLOR_HEX(0xFFD0BCFF);
+
+		this->set_current_theme(DEFAULT_THEME_LIGHT);
 	};
 
 	App::App(const std::string& window_title) : App()
@@ -162,6 +199,11 @@ namespace modui
 	Theme& App::get_current_theme()
 	{
 		return *this->_current_theme;
+	}
+
+	void App::set_current_theme(const std::string& theme_name)
+	{
+		this->_current_theme = &this->_theme_manager.get(theme_name);
 	}
 
 	ImDrawListSplitter& App::get_draw_list_splitter()

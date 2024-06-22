@@ -36,9 +36,14 @@ namespace modui::ui
 
 		this->_pos = pos;
 
-		return this->_orientation == LAYOUT_ORIENTATION_VERTICAL ?
+		Vec2 ret_pos = this->_orientation == LAYOUT_ORIENTATION_VERTICAL ?
 			this->_render_vertical(pos, reserved_space) :
 			this->_render_horizontal(pos, reserved_space);
+
+		ImGui::SetCursorScreenPos(pos);
+		ImGui::Dummy(ret_pos - pos);
+
+		return ret_pos;
 	}
 
 	Vec2 LinearLayout::_render_vertical(Vec2 pos, Vec2 reserved_space)
@@ -68,7 +73,8 @@ namespace modui::ui
 		Vec2 max_pos = in_pos;
 
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-		draw_list->PushClipRect(pos, pos + size);
+		// draw_list->PushClipRect(pos, pos + size);
+		// draw_list->AddRect(pos, pos + size, 0xFF7F7F7F, 3.0f);
 		// draw_list->AddRectFilled(in_pos, in_pos + in_size, 0xFF00FF00);
 
 		bool first_done = false;
@@ -104,7 +110,7 @@ namespace modui::ui
 			if (widget_end.y > max_pos.y) max_pos.y = widget_end.y;
 		}
 
-		draw_list->PopClipRect();
+		// draw_list->PopClipRect();
 
 		max_pos = max_pos + Vec2(this->_padding.y, this->_padding.z);
 
@@ -113,10 +119,10 @@ namespace modui::ui
 			max_pos.x = pos.x + size.x;
 		}
 
-		if (!adaptive_height)
-		{
-			max_pos.y = pos.y + size.y;
-		}
+		// if (!adaptive_height)
+		// {
+		// 	max_pos.y = pos.y + size.y;
+		// }
 
 		// draw_list->AddRect(pos, max_pos, 0xFF00FFFF);
 
@@ -150,7 +156,8 @@ namespace modui::ui
 		Vec2 max_pos = in_pos;
 
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-		draw_list->PushClipRect(pos, pos + size);
+		// draw_list->PushClipRect(pos, pos + size);
+		// draw_list->AddRect(pos, pos + size, 0xFF7F7F7F, 3.0f);
 		// draw_list->AddRectFilled(in_pos, in_pos + in_size, 0xFFFFFF00);
 
 		bool first_done = false;
@@ -186,14 +193,14 @@ namespace modui::ui
 			if (widget_end.y > max_pos.y) max_pos.y = widget_end.y;
 		}
 
-		draw_list->PopClipRect();
+		// draw_list->PopClipRect();
 
 		max_pos = max_pos + Vec2(this->_padding.y, this->_padding.z);
 
-		if (!adaptive_width)
-		{
-			max_pos.x = pos.x + size.x;
-		}
+		// if (!adaptive_width)
+		// {
+		// 	max_pos.x = pos.x + size.x;
+		// }
 
 		if (!adaptive_height)
 		{

@@ -3,9 +3,6 @@
 #include "../../core/common.hpp"
 #include "../widget.hpp"
 
-#include <string>
-#include <vector>
-
 namespace modui::ui
 {
 	class LinearLayout : public Widget
