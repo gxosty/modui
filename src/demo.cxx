@@ -212,6 +212,7 @@ int main()
 
 	// Our state
 	ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
+	modui::set_screen_density(1.666667f);
 	MyApp* app = new MyApp();
 
 	// Main loop

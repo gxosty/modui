@@ -65,6 +65,7 @@ namespace modui
 	};
 
 	App* get_current_app();
+	void set_screen_density(float density);
 
 	namespace utils
 	{

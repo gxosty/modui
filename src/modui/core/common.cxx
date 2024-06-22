@@ -3,11 +3,16 @@
 namespace modui
 {
 	App* __current_app = nullptr;
-	float __screen_density = 96.0f;
+	float __screen_density = 1.6667f;
 
 	App* get_current_app()
 	{
 		return __current_app;
+	}
+
+	void set_screen_density(float density)
+	{
+		this->__screen_density = density;
 	}
 
 	namespace utils
@@ -15,7 +20,7 @@ namespace modui
 		Col4 Col32to4(Col32 col32) { return ImGui::ColorConvertU32ToFloat4(col32); }
 		Col32 Col4to32(Col4 col4) { return ImGui::ColorConvertFloat4ToU32(col4); }
 
-		float dp(float size) { return (size * 160.0f) / __screen_density; }
+		float dp(float size) { return size * __screen_density; }
 
 		Col32 add_button_pressed_layer(Col32 base_color, Col32 press_layer)
 		{
