@@ -77,25 +77,12 @@ public:
 				ui::Screen::init("screen1")
 					->add_widget(
 						ui::LinearLayout::init()
+							->set_size(Vec2(0.0f, 0.0f))
 							->set_padding(DP(10))
 							->set_spacing(DP(10))
 							->add_widget(
-								ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-									->set_spacing(DP(5))
-									->add_widget(
-										ui::Text::init("0.0000000")
-											->set_id("slider_value")
-											->set_size_y(DP(20))
-									)
-									->add_widget(
-										ui::Slider::init(0.0f, 100.0f)
-											->on_slide(MODUI_CALLBACK(this) {
-												ui::Text* text = (ui::Text*)this->screen_manager->find_widget_by_id("slider_value");
-												ui::Slider* slider = (ui::Slider*)this_widget;
-												// slider->set_value(round(slider->get_value()));
-												text->set_text(std::to_string(slider->get_value()));
-											})
-									)
+								ui::Slider::init(0.0f, 100.0f)
+									->set_size_x(DP(100))
 							)
 							->add_widget(
 								ui::Text::init("You are currently in screen1")
@@ -110,13 +97,8 @@ public:
 									})
 							)
 							->add_widget(
-								CustomWidget::init()
-							)
-							->add_widget(
-								CustomWidget::init()
-							)
-							->add_widget(
 								ui::FilledCard::init()
+									->set_size(Vec2(0.0f, 0.0f))
 									->set_padding(DP(10))
 									->set_spacing(DP(10))
 									// ->set_size_x(DP(200))

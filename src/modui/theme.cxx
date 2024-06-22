@@ -29,7 +29,7 @@ namespace modui
 			0xFF201B1D, // on_surface;
 			0xFF7EE0E7, // surface_variant;
 			0xFF4F4549, // on_surface_variant;
-			0xFF6EE0E6, // surface_container_highest;
+			0xFFE9E0E6, // surface_container_highest;
 			0xFFCEE6EC, // surface_container_high;
 			0xFF3EEDF3, // surface_container;
 			0xFF7FF2F7, // surface_container_low;

@@ -41,8 +41,8 @@ namespace modui::ui
 			size.y = reserved_space.y + (size.y == MODUI_SIZE_HEIGHT_FULL ? 0.0f : size.y);
 		}
 
-		float start_x = pos.x + MODUI_WIDGET_SLIDER_CIRCLE_RADIUS;
-		float end_x = pos.x + size.x - MODUI_WIDGET_SLIDER_CIRCLE_RADIUS;
+		float start_x = pos.x + __ripple_radius;
+		float end_x = pos.x + size.x - __ripple_radius;
 		float center_y = pos.y + size.y / 2.0f;
 		float slider_x = utils::map(this->_value, this->_min_value, this->_max_value, start_x, end_x);\
 
@@ -52,7 +52,7 @@ namespace modui::ui
 		Vec2 l2_p1 = Vec2(slider_x, center_y - MODUI_WIDGET_SLIDER_THICKNESS / 2.0f);
 		Vec2 l2_p2 = Vec2(end_x, center_y + MODUI_WIDGET_SLIDER_THICKNESS / 2.0f);
 
-		ui::BaseSlider::render(Vec2(start_x, center_y - MODUI_WIDGET_SLIDER_CIRCLE_RADIUS), Vec2(end_x - start_x, MODUI_WIDGET_SLIDER_CIRCLE_RADIUS * 2.0f));
+		ui::BaseSlider::render(Vec2(start_x, center_y - __ripple_radius), Vec2(end_x - start_x, __ripple_radius * 2.0f));
 
 		this->_press_factor = utils::clamp(
 			this->_press_factor + (ImGui::GetIO().DeltaTime * MODUI_WIDGET_PRESS_TRANSITION_SPEED) * (this->_is_held ? 1.0f : -1.0f),
