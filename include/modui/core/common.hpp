@@ -6,6 +6,8 @@
 
 #include <functional>
 
+#define __MODUI_VERSION__ "0.1.0beta"
+
 typedef ImVec2 Vec2;
 typedef ImVec4 Vec4;
 
