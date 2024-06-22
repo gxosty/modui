@@ -2,7 +2,7 @@
 #include <modui/app.hpp>
 #include "../internal/internal_utils.hpp"
 
-#include <iostream>
+#include <cstdarg>
 
 namespace modui::ui
 {
@@ -22,14 +22,14 @@ namespace modui::ui
 
 	Widget* Widget::init() { return new Widget(); }
 
-	Widget* Widget::add_widget(Widget* widget)
+	Widget* Widget::add(Widget* widget)
 	{
 		widget->_set_parent(this);
 		this->_children.push_back(widget);
 		return this;
 	}
 
-	Widget* Widget::remove_widget(Widget* widget)
+	Widget* Widget::remove(Widget* widget)
 	{
 		if (this->_children.empty())
 		{

@@ -25,42 +25,9 @@
 
 namespace ui = modui::ui;
 
-class CustomWidget : public ui::LinearLayout
-{
-public:
-	CustomWidget() : ui::LinearLayout(modui::LAYOUT_ORIENTATION_VERTICAL), count{0} {}
 
-	static CustomWidget* init()
-	{
-		return MODUI_WIDGET_INIT(CustomWidget);
-	}
 
-	void update()
-	{
-		this->text->set_text("Count: " + std::to_string(this->count));
-	}
 
-private:
-	virtual void on_create_widget() override
-	{
-		this->add_widget(
-			ui::Text::init("Count: 0")
-				->set_id("text")
-		)
-		->add_widget(
-			ui::Button::init("Add +1")
-				->on_release(MODUI_CALLBACK(this) {
-					this->count++;
-					this->update();
-				})
-		);
-
-		text = (ui::Text*)this->find_widget_by_id("text");
-	}
-
-	int count;
-	ui::Text* text;
-};
 
 class MyApp : public modui::App
 {
@@ -72,67 +39,96 @@ public:
 		this->screen_manager = ui::ScreenManager::init();
 
 		return
-		this->screen_manager
-			->add_widget(
-				ui::Screen::init("screen1")
-					->add_widget(
-						ui::LinearLayout::init()
-							->set_size(Vec2(0.0f, 0.0f))
-							->set_padding(DP(10))
-							->set_spacing(DP(10))
-							->add_widget(
-								ui::Slider::init(0.0f, 100.0f)
-									->set_size_x(DP(100))
-							)
-							->add_widget(
-								ui::Text::init("You are currently in screen1")
-							)
-							->add_widget(
-								ui::Checkbox::init()
-							)
-							->add_widget(
-								ui::Button::init("Change to screen1")
-									->on_release(MODUI_CALLBACK(this) {
-										this->screen_manager->set_screen("screen2");
-									})
-							)
-							->add_widget(
-								ui::FilledCard::init()
-									->set_size(Vec2(0.0f, 0.0f))
-									->set_padding(DP(10))
-									->set_spacing(DP(10))
-									// ->set_size_x(DP(200))
-									->add_widget(
-										ui::Text::init("Card Title")
-											->set_font_size(DP(10))
-									)
-									->add_widget(
-										ui::Button::init("Button 2")
-											->set_size_x(DP(50))
-									)
-							)
-					)
-			)
-			->add_widget(
-				ui::Screen::init("screen2")
-					->add_widget(
-						ui::LinearLayout::init()
-							->add_widget(
-								ui::Text::init("Now you are in screen2")
-							)
-							->add_widget(
-								ui::Button::init("Change to screen1")
-									->on_release(MODUI_CALLBACK(this) {
-										this->screen_manager->set_screen("screen1");
-									})
-							)
-					)
-			);
+		this->screen_manager->add(
+			ui::Screen::init("demo_screen1")
+				->add(
+					ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+						->set_padding(DP(5))
+						->set_spacing(DP(5))
+						->add(
+							ui::Text::init("ModUI Demo"),
+							
+							ui::Button::init("Button"),
+							
+							ui::Button::init("width dp(150) button")
+								->set_size_x(DP(150)),
+							
+							ui::Button::init("Full width button")
+								->set_size_x(MODUI_SIZE_WIDTH_FULL),
+
+							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+								->set_spacing(DP(5))
+								->set_size_y(0.0f)
+								->add(
+									ui::Text::init("Checkboxes")
+										->set_size_y(DP(20)),
+
+									ui::Checkbox::init(),
+									ui::Checkbox::init()
+								),
+
+							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+								->set_spacing(DP(5))
+								->set_size_y(0.0f)
+								->add(
+									ui::Text::init("Slider")
+										->set_size_y(DP(20)),
+
+									ui::Slider::init(0.0f, 100.0f)
+										->on_slide(MODUI_CALLBACK(this) {
+											ui::Text* text = (ui::Text*)this->screen_manager->find_widget_by_id("slider_value");
+											ui::Slider* slider = (ui::Slider*)this_widget;
+
+											text->set_text("Slider value: " + std::to_string(slider->get_value()));
+										})
+								),
+
+							ui::Text::init("Slider value: 0.0")
+								->set_id("slider_value"),
+
+							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+								->set_spacing(DP(5))
+								->add(
+									ui::FilledCard::init()
+										// ->set_size_x(DP(150))
+										->set_size_y(0.0f) // 0.0f means adaptive height
+										->set_padding(DP(10))
+										->set_spacing(DP(5))
+										->add(
+											ui::Text::init("Card Title 1")
+												->set_font_size(DP(18)),
+
+											ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
+
+											ui::Button::init("Open")
+										),
+
+									ui::FilledCard::init()
+										// ->set_size_x(DP(150))
+										->set_size_y(0.0f)
+										->set_padding(DP(10))
+										->set_spacing(DP(5))
+										->add(
+											ui::Text::init("Card Title 2")
+												->set_font_size(DP(18)),
+
+											ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
+
+											ui::Button::init("Open")
+										)
+								)
+						)
+				)
+		);
 	}
 
 private:
 	ui::ScreenManager* screen_manager;
 };
+
+
+
+
 
 // Data stored per platform window
 struct WGL_WindowData { HDC hDC; };
@@ -155,7 +151,7 @@ int main()
 	//ImGui_ImplWin32_EnableDpiAwareness();
 	WNDCLASSEXW wc = { sizeof(wc), CS_OWNDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
 	::RegisterClassExW(&wc);
-	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui Win32+OpenGL3 Example", WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, wc.hInstance, nullptr);
+	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui Win32+OpenGL3 Example", WS_OVERLAPPEDWINDOW, 100, 100, 470, 600, nullptr, nullptr, wc.hInstance, nullptr);
 
 	// Initialize OpenGL
 	if (!CreateDeviceWGL(hwnd, &g_MainWindow))
@@ -195,7 +191,7 @@ int main()
 	// - Read 'docs/FONTS.md' for more instructions and details.
 	// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
 	//io.Fonts->AddFontDefault();
-	//io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 48.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);

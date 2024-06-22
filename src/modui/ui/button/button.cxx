@@ -8,7 +8,7 @@ namespace modui::ui
 {
 	Button::Button(const std::string& text) : BaseButton(),
 		_text{text},
-		_font_size{utils::dp(8)},
+		_font_size{utils::dp(12)},
 		_press_factor{0.0f},
 		_rounding{99999.0f}
 	{

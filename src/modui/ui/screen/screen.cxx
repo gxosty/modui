@@ -21,12 +21,12 @@ namespace modui::ui
 		return this->_name;
 	}
 
-	Screen* Screen::add_widget(Widget* widget)
+	Screen* Screen::add(Widget* widget)
 	{
 		if (!this->_children.empty())
 			throw exceptions::AddWidgetException("Only one widget can be added to `modui::ui::Screen` object");
 
-		return (Screen*)Widget::add_widget(widget);
+		return (Screen*)Widget::add(widget);
 	}
 
 	Vec2 Screen::render(Vec2 pos, Vec2 reserved_space)

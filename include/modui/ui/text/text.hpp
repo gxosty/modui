@@ -27,7 +27,7 @@ namespace modui::ui
 		Vec2 _text_size_v;
 		modui::Side _side;
 
-		void _update_text_size_v();
+		void _update_text_size_v(float available_width = 0.0f);
 
 		Vec2 _calc_side();
 	};

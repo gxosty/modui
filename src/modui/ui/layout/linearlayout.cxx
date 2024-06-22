@@ -5,10 +5,20 @@ namespace modui::ui
 	LinearLayout::LinearLayout(modui::LayoutOrientation orientation) : Widget(),
 		_orientation{orientation}
 	{
-		this->_size = Vec2(
-			MODUI_SIZE_WIDTH_FULL,
-			MODUI_SIZE_HEIGHT_FULL
-		);
+		if (this->_orientation == modui::LAYOUT_ORIENTATION_VERTICAL)
+		{
+			this->_size = Vec2(
+				0.0f,
+				MODUI_SIZE_HEIGHT_FULL
+			);
+		}
+		else
+		{
+			this->_size = Vec2(
+				MODUI_SIZE_WIDTH_FULL,
+				0.0f
+			);
+		}
 	};
 
 	LinearLayout* LinearLayout::init(modui::LayoutOrientation orientation) { return new LinearLayout(orientation); }
@@ -22,7 +32,7 @@ namespace modui::ui
 
 	Vec2 LinearLayout::render(Vec2 pos, Vec2 reserved_space)
 	{
-		if (this->_children.empty()) return pos;
+		// if (this->_children.empty()) return pos;
 
 		this->_pos = pos;
 

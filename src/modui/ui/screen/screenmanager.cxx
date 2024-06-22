@@ -29,13 +29,13 @@ namespace modui::ui
 		return nullptr;
 	}
 
-	ScreenManager* ScreenManager::add_widget(Widget* widget)
+	ScreenManager* ScreenManager::add(Widget* widget)
 	{
 		Screen* screen = dynamic_cast<Screen*>(widget);
 
 		if (screen == nullptr) throw exceptions::AddWidgetException("Only `Screen` objects can be added to `ScreenManager`");
 
-		auto ret = Widget::add_widget(widget);
+		auto ret = Widget::add(widget);
 
 		if (this->_children.size() == 1) this->set_screen(((Screen*)this->_children[0])->get_name());
 

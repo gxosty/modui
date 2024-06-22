@@ -1,11 +1,13 @@
 #include <modui/ui/text/text.hpp>
 #include "../../internal/internal_core.hpp"
 
+#include <stdio.h>
+
 namespace modui::ui
 {
 	Text::Text(const std::string& text) : Widget(),
 		_text{text},
-		_font_size{utils::dp(8)}
+		_font_size{utils::dp(12)}
 	{
 		this->_size = Vec2(0.0f, 0.0f);
 		this->_side = modui::SIDE_LEFT;
@@ -56,20 +58,22 @@ namespace modui::ui
 
 		if (size.x == 0.0f)
 		{
-			size.x = this->_text_size_v.x;
+			this->_update_text_size_v(reserved_space.x - this->_padding.y - this->_padding.w);
+			size.x = this->_text_size_v.x + this->_padding.y + this->_padding.w;
 		}
-		else if (size.x < 0.0f)
+		else
 		{
-			size.x = reserved_space.x + (size.x == MODUI_SIZE_WIDTH_FULL ? 0.0f : size.x) - this->_padding.y - this->_padding.w;
+			if (size.x < 0.0f)
+			{
+				size.x = reserved_space.x + (size.x == MODUI_SIZE_WIDTH_FULL ? 0.0f : size.x);
+			}
+
+			this->_update_text_size_v(size.x - this->_padding.y - this->_padding.w);
 		}
 
 		if (size.y == 0.0f)
 		{
-			size.y = this->_text_size_v.y;
-		}
-		else if (size.y < 0.0f)
-		{
-			size.y = reserved_space.y + (size.y == MODUI_SIZE_HEIGHT_FULL ? 0.0f : size.y) - this->_padding.x - this->_padding.z;
+			size.y = this->_text_size_v.y - this->_padding.x - this->_padding.z;
 		}
 
 		this->_pos = pos;
@@ -78,14 +82,15 @@ namespace modui::ui
 		text_pos.x += this->_padding.w;
 		text_pos.y += this->_padding.x;
 
-		draw_list->AddText(ImGui::GetFont(), this->_font_size, text_pos, theme().on_surface, this->_text.c_str());
+		draw_list->AddText(ImGui::GetFont(), this->_font_size, text_pos, theme().on_surface, this->_text.c_str(), nullptr, size.x);
+		// draw_list->AddRect(pos, pos + size, theme().primary);
 
-		return pos + size + Vec2(this->_padding.y + this->_padding.w, this->_padding.x + this->_padding.z);
+		return pos + size;
 	}
 
-	void Text::_update_text_size_v()
+	void Text::_update_text_size_v(float available_width)
 	{
-		if (this->_text.empty() || this->_font_size == 0.0f)
+		if (this->_text.empty() || (this->_font_size == 0.0f) || (available_width < 0.0f))
 		{
 			this->_text_size_v.x = 0.0f;
 			this->_text_size_v.y = 0.0f;
@@ -93,7 +98,8 @@ namespace modui::ui
 			return;
 		}
 
-		this->_text_size_v = ImGui::CalcTextSize(this->_text.c_str()) * (this->_font_size / ImGui::GetFontSize());
+		this->_text_size_v = ImGui::GetFont()->CalcTextSizeA(this->_font_size, FLT_MAX, available_width, this->_text.c_str(), nullptr);
+		this->_text_size_v.x += 1.0f;
 	}
 
 	Vec2 Text::_calc_side()

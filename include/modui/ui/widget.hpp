@@ -18,8 +18,8 @@ namespace modui::ui
 		virtual ~Widget();
 		static Widget* init();
 
-		virtual Widget* add_widget(Widget* widget);
-		virtual Widget* remove_widget(Widget* widget);
+		virtual Widget* add(Widget* widget);
+		virtual Widget* remove(Widget* widget);
 
 		virtual void pre_render();
 		virtual Vec2 render(Vec2 pos, Vec2 reserved_space);
@@ -39,6 +39,19 @@ namespace modui::ui
 		Theme& get_theme();
 
 		Widget* build_widget();
+
+		Widget* operator()(Widget* widget)
+		{
+			this->add(widget);
+			return this;
+		}
+
+		template<typename... Args>
+		Widget* add(Widget* widget, Args... args)
+		{
+			this->add(widget);
+			return this->add(args...);
+		}
 
 		// placeholder for inherited objects, DON'T TOUCH
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_orientation(modui::LayoutOrientation orientation);
