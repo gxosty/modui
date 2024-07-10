@@ -5,20 +5,10 @@ namespace modui::ui
 	LinearLayout::LinearLayout(modui::LayoutOrientation orientation) : Widget(),
 		_orientation{orientation}
 	{
-		if (this->_orientation == modui::LAYOUT_ORIENTATION_VERTICAL)
-		{
-			this->_size = Vec2(
-				0.0f,
-				MODUI_SIZE_HEIGHT_FULL
-			);
-		}
-		else
-		{
-			this->_size = Vec2(
-				MODUI_SIZE_WIDTH_FULL,
-				0.0f
-			);
-		}
+		this->_size = Vec2(
+			MODUI_SIZE_WIDTH_WRAP,
+			MODUI_SIZE_HEIGHT_WRAP
+		);
 	};
 
 	LinearLayout* LinearLayout::init(modui::LayoutOrientation orientation) { return new LinearLayout(orientation); }
@@ -210,5 +200,201 @@ namespace modui::ui
 		// draw_list->AddRect(pos, max_pos, 0xFF00FFFF);
 
 		return max_pos;
+	}
+
+	float LinearLayout::calculate_size_x(float reserved_space_x)
+	{
+		float x = this->_size.x;
+
+		float calculated_x = x;
+
+		if ((x == MODUI_SIZE_WIDTH_FULL) || (x == MODUI_SIZE_WIDTH_WRAP))
+		{
+			calculated_x = reserved_space_x;
+		}
+		else if (x < 0.0f)
+		{
+			calculated_x = reserved_space_x + x;
+		}
+
+		float inner_reserved_space_x = calculated_x - this->_padding.y - this->_padding.w;
+
+		if (this->_orientation == modui::LAYOUT_ORIENTATION_HORIZONTAL)
+		{
+			unsigned children_count = this->_children.size();
+			inner_reserved_space_x -= this->_spacing.x * (children_count - 1);
+			unsigned fwidth_count = 0;
+			float max_x = 0.0f;
+
+			for (auto child : this->_children)
+			{
+				if (child->get_size().x == MODUI_SIZE_WIDTH_FULL)
+				{
+					fwidth_count++;
+					continue;
+				}
+
+				float _x = child->calculate_size_x(inner_reserved_space_x);
+				max_x += _x;
+				inner_reserved_space_x -= _x;
+			}
+
+			if (fwidth_count)
+			{
+				float freserved_space_x = inner_reserved_space_x / fwidth_count;
+
+				for (auto child : this->_children)
+				{
+					if (child->get_size().x != MODUI_SIZE_WIDTH_FULL) continue;
+
+					child->calculate_size_x(freserved_space_x);
+				}
+
+			}
+			else
+			{
+				if (x == MODUI_SIZE_WIDTH_WRAP)
+				{
+					calculated_x = max_x + this->_padding.y + this->_padding.w + this->_spacing.x * (children_count - 1);
+				}
+			}
+
+		}
+		else
+		{
+			unsigned fwidth_count = 0;
+			float max_x = 0.0f;
+
+			for (auto child : this->_children)
+			{
+				if ((x == MODUI_SIZE_WIDTH_WRAP) && (child->get_size().x == MODUI_SIZE_WIDTH_FULL))
+				{
+					fwidth_count++;
+					continue;
+				}
+
+				max_x = fmax(child->calculate_size_x(inner_reserved_space_x), max_x);
+			}
+
+			if (fwidth_count)
+			{
+
+				for (auto child : this->_children)
+				{
+					if (child->get_size().x != MODUI_SIZE_WIDTH_FULL) continue;
+
+					child->calculate_size_x(max_x);
+				}
+
+			}
+
+			if (x == MODUI_SIZE_WIDTH_WRAP)
+			{
+				calculated_x = max_x + this->_padding.y + this->_padding.w;
+			}
+
+		}
+
+		x = calculated_x;
+		this->_calculated_size.x = x;
+
+		return x;
+	}
+
+	float LinearLayout::calculate_size_y(float reserved_space_y)
+	{
+		float y = this->_size.y;
+
+		float calculated_y = y;
+
+		if ((y == MODUI_SIZE_HEIGHT_FULL) || (y == MODUI_SIZE_HEIGHT_WRAP))
+		{
+			calculated_y = reserved_space_y;
+		}
+		else if (y < 0.0f)
+		{
+			calculated_y = reserved_space_y + y;
+		}
+
+		float inner_reserved_space_y = calculated_y - this->_padding.y - this->_padding.w;
+
+		if (this->_orientation == modui::LAYOUT_ORIENTATION_VERTICAL)
+		{
+			unsigned children_count = this->_children.size();
+			inner_reserved_space_y -= this->_spacing.y * (children_count - 1);
+			unsigned fheight_count = 0;
+			float max_y = 0.0f;
+
+			for (auto child : this->_children)
+			{
+				if (child->get_size().y == MODUI_SIZE_HEIGHT_FULL)
+				{
+					fheight_count++;
+					continue;
+				}
+
+				float _y = child->calculate_size_y(inner_reserved_space_y);
+				max_y += _y;
+				inner_reserved_space_y -= _y;
+			}
+
+			if (fheight_count)
+			{
+				float freserved_space_y = inner_reserved_space_y / fheight_count;
+
+				for (auto child : this->_children)
+				{
+					if (child->get_size().y != MODUI_SIZE_HEIGHT_FULL) continue;
+
+					child->calculate_size_y(freserved_space_y);
+				}
+
+			}
+			else
+			{
+				if (y == MODUI_SIZE_HEIGHT_WRAP)
+				{
+					calculated_y = max_y + this->_padding.x + this->_padding.z + this->_spacing.x * (children_count - 1);
+				}
+			}
+
+		}
+		else
+		{
+			unsigned fheight_count = 0;
+			float max_y = 0.0f;
+
+			for (auto child : this->_children)
+			{
+				if ((y == MODUI_SIZE_HEIGHT_WRAP) && (child->get_size().y == MODUI_SIZE_HEIGHT_FULL))
+				{
+					fheight_count++;
+					continue;
+				}
+
+				max_y = fmax(child->calculate_size_y(inner_reserved_space_y), max_y);
+			}
+
+			if (fheight_count)
+			{
+				for (auto child : this->_children)
+				{
+					if (child->get_size().y != MODUI_SIZE_HEIGHT_FULL) continue;
+
+					child->calculate_size_y(max_y);
+				}
+
+			}
+
+			if (y == MODUI_SIZE_HEIGHT_WRAP)
+			{
+				calculated_y = max_y + this->_padding.x + this->_padding.z;
+			}
+		}
+
+		y = calculated_y;
+		this->_calculated_size.y = y;
+
+		return y;
 	}
 }

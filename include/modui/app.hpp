@@ -23,6 +23,7 @@ namespace modui
 		App* set_window_title(const std::string& window_title);
 		App* set_window_size(Vec2 window_size);
 		App* set_window_fullscreen(bool fullscreen);
+		App* set_window_open(bool open);
 
 		ThemeManager& get_theme_manager();
 		Theme& get_current_theme();
@@ -30,6 +31,7 @@ namespace modui
 
 		void set_current_theme(const std::string& theme_name);
 
+		bool is_window_open();
 		bool is_rendering();
 
 		void pre_render();
@@ -42,11 +44,15 @@ namespace modui
 		bool _fullscreen;
 		std::string _window_title;
 		Vec2 _window_size; // only when not fullscreen
+		bool _window_open;
 		ThemeManager _theme_manager;
 		Theme* _current_theme;
 		bool _prerendered;
 		bool _rendering;
 
 		ImDrawListSplitter _draw_list_splitter;
+
+		ui::Widget* _window_close_button;
+		void _render_window_title();
 	};
 }

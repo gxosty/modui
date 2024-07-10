@@ -5,13 +5,13 @@
 
 namespace modui::ui
 {
-	class Checkbox : public BaseButton
+	class Switch : public BaseButton
 	{
 	public:
-		Checkbox(bool state);
-		static Checkbox* init(bool state = false);
+		Switch(bool state);
+		static Switch* init(bool state = false);
 
-		Checkbox* set_state(bool state) override;
+		Switch* set_state(bool state) override;
 		bool get_state();
 
 		virtual Widget* on_release(ButtonInputCallback callback) override;
@@ -22,10 +22,9 @@ namespace modui::ui
 		virtual float calculate_size_y(float reserved_space_y) override;
 
 	private:
-		float _rounding;
-
 		bool _state;
 
 		float _press_factor;
+		float _state_factor;
 	};
 }

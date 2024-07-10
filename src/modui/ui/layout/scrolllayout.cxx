@@ -4,7 +4,10 @@ namespace modui::ui
 {
 	ScrollLayout::ScrollLayout() : Widget()
 	{
-		this->_size = Vec2(0.0f, 0.0f);
+		this->_size = Vec2(
+			MODUI_SIZE_WIDTH_FULL,
+			MODUI_SIZE_HEIGHT_FULL
+		);
 	}
 
 	ScrollLayout* ScrollLayout::init() { return new ScrollLayout(); }
@@ -32,21 +35,73 @@ namespace modui::ui
 			ImGui::PushStyleColor(ImGuiCol_ScrollbarGrab, theme().secondary);
 			ImGui::PushStyleColor(ImGuiCol_ScrollbarGrab, theme().secondary);
 			ImGui::PushStyleColor(ImGuiCol_ScrollbarGrab, theme().secondary);
-			bool opened = ImGui::BeginChild(DEFAULT_ID, reserved_space, 0,
+			ImGui::PushStyleColor(ImGuiCol_ChildBg, 0);
+			bool opened = ImGui::BeginChild(DEFAULT_ID, this->_calculated_size, 0,
 				  ImGuiWindowFlags_NoTitleBar
 				| ImGuiWindowFlags_NoResize
 				| ImGuiWindowFlags_NoMove
 				| ImGuiWindowFlags_NoCollapse);
 
 			if (opened)
-				this->_children[0]->render(ImGui::GetCursorScreenPos(), reserved_space);
+				this->_children[0]->render(ImGui::GetCursorScreenPos(), this->_calculated_size);
 
 			ImGui::EndChild();
-			ImGui::PopStyleColor(4);
+			ImGui::PopStyleColor(5);
 			ImGui::PopStyleVar(2);
 			ImGui::PopID();
 		}
 
-		return pos + reserved_space;
+		return pos + this->_calculated_size;
+	}
+
+	float ScrollLayout::calculate_size_x(float reserved_space_x)
+	{
+		float x = this->_size.x;
+
+		if (x == MODUI_SIZE_WIDTH_FULL)
+		{
+			x = reserved_space_x;
+			if (!this->_children.empty()) this->_children[0]->calculate_size_x(x);
+		}
+		else if (x == MODUI_SIZE_WIDTH_WRAP)
+		{
+			if (!this->_children.empty())
+			{
+				x = this->_children[0]->calculate_size_x(reserved_space_x);
+			}
+			else
+			{
+				x = 0.0f;
+			}
+		}
+		else if (x < 0.0f)
+		{
+			x = reserved_space_x + x;
+			if (!this->_children.empty()) this->_children[0]->calculate_size_x(x);
+		}
+
+		this->_calculated_size.x = x;
+
+		return x;
+	}
+
+	float ScrollLayout::calculate_size_y(float reserved_space_y)
+	{
+		float y = this->_size.y;
+
+		if ((y == MODUI_SIZE_WIDTH_FULL) || (y == MODUI_SIZE_HEIGHT_WRAP))
+		{
+			y = reserved_space_y;
+		}
+		else if (y < 0.0f)
+		{
+			y = reserved_space_y + y;
+		}
+
+		if (!this->_children.empty()) this->_children[0]->calculate_size_y(99999.0f);
+
+		this->_calculated_size.y = y;
+
+		return y;
 	}
 }

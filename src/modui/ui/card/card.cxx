@@ -4,7 +4,7 @@
 namespace modui::ui
 {
 	FilledCard::FilledCard(modui::LayoutOrientation orientation) : LinearLayout(orientation),
-		_rounding{utils::dp(6)} {}
+		_rounding{utils::dp(16)} {}
 
 	FilledCard* FilledCard::init(modui::LayoutOrientation orientation) { return new FilledCard(orientation); }
 
@@ -16,7 +16,9 @@ namespace modui::ui
 
 		draw_list_splitter.Split(draw_list, 2);
 		draw_list_splitter.SetCurrentChannel(draw_list, 1);
+		Widget::push_on_card();
 		auto ret = LinearLayout::render(pos, reserved_space);
+		Widget::pop_on_card();
 
 		draw_list_splitter.SetCurrentChannel(draw_list, 0);
 

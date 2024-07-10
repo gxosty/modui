@@ -1,18 +1,18 @@
 #include <modui/ui/button/button.hpp>
-#include "../../internal/internal_core.hpp"
+#include <modui/app.hpp>
 
 #include <cmath>
-#include <iostream>
+#include <cstdio>
 
 namespace modui::ui
 {
 	Button::Button(const std::string& text) : BaseButton(),
 		_text{text},
-		_font_size{utils::dp(12)},
-		_press_factor{0.0f},
-		_rounding{99999.0f}
+		_font_size{ImGui::GetFontSize()},
+		_press_factor{0.0f}
 	{
-		this->_size = Vec2(0.0f, utils::dp(20.0f));
+		this->_size = Vec2(MODUI_SIZE_WIDTH_WRAP, utils::dp(40));
+		this->_rounding = this->_size.y / 2.0f;
 	}
 
 	Button* Button::init(const std::string& text) { return new Button(text); }
@@ -54,26 +54,8 @@ namespace modui::ui
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
-		Vec2 size = this->_size;
-
-		if (size.x == 0.0f)
-		{
-			size.x = this->_text_size_v.x + utils::dp(10) * 2.0f;
-		}
-		else if (size.x < 0.0f)
-		{
-			size.x = reserved_space.x + (size.x == MODUI_SIZE_WIDTH_FULL ? 0.0f : size.x);
-		}
-
-		if (size.y == 0.0f)
-		{
-			size.y = this->_text_size_v.y + utils::dp(5) * 2.0f;
-		}
-		else if (size.y < 0.0f)
-		{
-			size.y = reserved_space.y + (size.y == MODUI_SIZE_HEIGHT_FULL ? 0.0f : size.y);
-		}
-
+		Vec2 size = this->_calculated_size;
+		// printf("(%.2f, %.2f)\n", size.x, size.y);
 		this->_pos = pos;
 
 		ui::BaseButton::render(pos, size);
@@ -119,5 +101,49 @@ namespace modui::ui
 		}
 
 		this->_text_size_v = ImGui::CalcTextSize(this->_text.c_str()) * (this->_font_size / ImGui::GetFontSize());
+	}
+
+	float Button::calculate_size_x(float reserved_space_x)
+	{
+		float x = this->_size.x;
+
+		if (x == MODUI_SIZE_WIDTH_FULL)
+		{
+			x = reserved_space_x;
+		}
+		else if (x == MODUI_SIZE_WIDTH_WRAP)
+		{
+			x = this->_text_size_v.x + utils::dp(28) * 2.0f;
+		}
+		else if (x < 0.0f)
+		{
+			x = reserved_space_x + x;
+		}
+
+		this->_calculated_size.x = x;
+
+		return x;
+	}
+
+	float Button::calculate_size_y(float reserved_space_y)
+	{
+		float y = this->_size.y;
+
+		if (y == MODUI_SIZE_WIDTH_FULL)
+		{
+			y = reserved_space_y;
+		}
+		else if (y == MODUI_SIZE_HEIGHT_WRAP)
+		{
+			y = this->_text_size_v.y + utils::dp(14) * 2.0f;
+		}
+		else if (y < 0.0f)
+		{
+			y = reserved_space_y + y;
+		}
+
+		this->_calculated_size.y = y;
+
+		return y;
 	}
 }

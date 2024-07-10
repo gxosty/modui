@@ -15,5 +15,8 @@ namespace modui::ui
 		virtual ScrollLayout* add(Widget* widget) override;
 
 		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+
+		virtual float calculate_size_x(float reserved_space_x) override;
+		virtual float calculate_size_y(float reserved_space_y) override;
 	};
 }

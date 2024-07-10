@@ -42,6 +42,9 @@ namespace modui
 		Col32 inverse_surface;
 		Col32 inverse_on_surface;
 		Col32 surface_tint;
+
+		Col32 outline;
+		Col32 outline_variant;
 	} ThemeVars;
 
 	class Theme

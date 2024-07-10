@@ -5,9 +5,9 @@ namespace modui::ui
 {
 	Checkbox::Checkbox(bool state) : BaseButton(),
 		_state{state},
-		_rounding{utils::dp(1)}
+		_rounding{utils::dp(2)}
 	{
-		this->_size = Vec2(utils::dp(20), utils::dp(20));
+		this->_size = Vec2(utils::dp(40), utils::dp(40));
 		BaseButton::on_release(MODUI_CALLBACK(this) {
 			this->set_state(!this->get_state());
 		});
@@ -39,12 +39,13 @@ namespace modui::ui
 
 	Vec2 Checkbox::render(Vec2 pos, Vec2 reserved_space)
 	{
-		static const Vec2 box_size = Vec2(utils::dp(10), utils::dp(10));
+		static const Vec2 __box_size = Vec2(utils::dp(20), utils::dp(20));
+		static const float __outline_width = utils::dp(2);
 
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
-		Vec2 size = this->_size;
+		Vec2 size = this->_calculated_size;
 		this->_pos = pos;
 
 		ui::BaseButton::render(pos, size);
@@ -71,34 +72,78 @@ namespace modui::ui
 			fill_color = Vec4(0.0f, 0.0f, 0.0f, 0.0f);
 
 			outline_color = utils::mix(
-				utils::Col32to4(theme().on_surface_variant),
+				utils::Col32to4(theme().outline),
 				utils::add_button_pressed_layer(
-					utils::Col32to4(theme().on_surface_variant),
-					utils::Col32to4(theme().on_surface)
+					utils::Col32to4(theme().outline),
+					utils::Col32to4(theme().outline_variant)
 				),
 				this->_press_factor
 			);
 		}
 
-		Vec2 box_pos = pos + (size - box_size) / 2.0f;
+		Vec2 box_pos = pos + (size - __box_size) / 2.0f;
 
 		draw_list->AddRectFilled(pos, pos + size, ripple_color, 99999.0f);
 
-		draw_list->AddRectFilled(box_pos, box_pos + box_size, utils::Col4to32(fill_color), this->_rounding);
-		draw_list->AddRect(box_pos, box_pos + box_size, utils::Col4to32(outline_color), this->_rounding, 0, MODUI_WIDGET_OUTLINE_WIDTH);
+		draw_list->AddRectFilled(box_pos, box_pos + __box_size, utils::Col4to32(fill_color), this->_rounding);
+		draw_list->AddRect(box_pos, box_pos + __box_size, utils::Col4to32(outline_color), this->_rounding, 0, __outline_width);
 
 		if (this->_state)
 		{
-			Vec2 l1_p1 = Vec2(box_pos.x + utils::dp(2), box_pos.y + box_size.y / 2.0f);
-			Vec2 l1_p2 = Vec2(box_pos.x + box_size.x / 2.0f - utils::dp(1), box_pos.y + box_size.y - utils::dp(2.5));
+			Vec2 l1_p1 = Vec2(box_pos.x + utils::dp(4), box_pos.y + __box_size.y / 2.0f);
+			Vec2 l1_p2 = Vec2(box_pos.x + __box_size.x / 2.0f - utils::dp(2), box_pos.y + __box_size.y - utils::dp(6));
 
 			Vec2 l2_p1 = l1_p2;
-			Vec2 l2_p2 = Vec2(box_pos.x + box_size.x - utils::dp(2), box_pos.y + utils::dp(2));
+			Vec2 l2_p2 = Vec2(box_pos.x + __box_size.x - utils::dp(4), box_pos.y + utils::dp(4));
 
-			draw_list->AddLine(l1_p1, l1_p2, theme().on_primary, MODUI_WIDGET_OUTLINE_WIDTH);
-			draw_list->AddLine(l2_p1, l2_p2, theme().on_primary, MODUI_WIDGET_OUTLINE_WIDTH);
+			draw_list->AddLine(l1_p1, l1_p2, theme().on_primary, __outline_width);
+			draw_list->AddLine(l2_p1, l2_p2, theme().on_primary, __outline_width);
 		}
 
 		return pos + size;
+	}
+
+	float Checkbox::calculate_size_x(float reserved_space_x)
+	{
+		float x = this->_size.x;
+
+		if (x == MODUI_SIZE_WIDTH_FULL)
+		{
+			x = reserved_space_x;
+		}
+		else if (x == MODUI_SIZE_WIDTH_WRAP)
+		{
+			x = utils::dp(40) + this->_padding.y + this->_padding.w;
+		}
+		else if (x < 0.0f)
+		{
+			x = reserved_space_x + x;
+		}
+
+		this->_calculated_size.x = x;
+
+		return x;
+	}
+
+	float Checkbox::calculate_size_y(float reserved_space_y)
+	{
+		float y = this->_size.y;
+
+		if (y == MODUI_SIZE_WIDTH_FULL)
+		{
+			y = reserved_space_y;
+		}
+		else if (y == MODUI_SIZE_HEIGHT_WRAP)
+		{
+			y = utils::dp(40) + this->_padding.x + this->_padding.z; 
+		}
+		else if (y < 0.0f)
+		{
+			y = reserved_space_y + y;
+		}
+
+		this->_calculated_size.y = y;
+
+		return y;
 	}
 }

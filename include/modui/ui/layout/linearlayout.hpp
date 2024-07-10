@@ -18,6 +18,9 @@ namespace modui::ui
 
 		LinearLayout* set_orientation(modui::LayoutOrientation orientation) override;
 
+		virtual float calculate_size_x(float reserved_space_x) override;
+		virtual float calculate_size_y(float reserved_space_y) override;
+
 	private:
 		modui::LayoutOrientation _orientation;
 

@@ -15,11 +15,14 @@ namespace modui::ui
 		ScreenManager();
 		static ScreenManager* init();
 
-		ScreenManager* set_screen(const std::string& screen_name);
+		ScreenManager* set_screen(const std::string& screen_name) override;
 		Screen* get_screen(const std::string& screen_name);
 
 		virtual ScreenManager* add(Widget* screen) override;
 		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+
+		virtual float calculate_size_x(float reserved_space_x) override;
+		virtual float calculate_size_y(float reserved_space_y) override;
 
 	private:
 		Screen* _current_screen;

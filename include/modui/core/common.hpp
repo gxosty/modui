@@ -14,6 +14,9 @@ typedef ImVec4 Vec4;
 typedef ImU32 Col32;
 typedef ImVec4 Col4;
 
+namespace modui::image { class Image; }
+typedef modui::image::Image* ImageID;
+
 static constexpr char* DEFAULT_ID = (char*)"modui_id";
 static constexpr char* DEFAULT_THEME_LIGHT = (char*)"default_theme_light";
 static constexpr char* DEFAULT_THEME_DARK = (char*)"default_theme_dark";
@@ -35,6 +38,7 @@ static constexpr char* DEFAULT_THEME_DARK = (char*)"default_theme_dark";
 #define MODUI_SIZE_HEIGHT_FULL MODUI_SIZE_FULL
 
 #define MODUI_ROUNDING_FULL 99999.0f
+#define MODUI_WIDGET_PRESS_TRANSITION_SPEED 1 / 0.08f // 80 millis
 
 #define DP(x) ::modui::utils::dp(x)
 
@@ -66,6 +70,7 @@ namespace modui
 
 	App* get_current_app();
 	void set_screen_density(float density);
+	void set_ui_scale(float scale);
 
 	namespace utils
 	{
@@ -73,12 +78,13 @@ namespace modui
 		Col32 Col4to32(Col4 col4);
 
 		float dp(float size);
+		float dp_raw(float size);
 
 		Col32 add_button_pressed_layer(Col32 base_color, Col32 press_layer);
 		Col4 add_button_pressed_layer(Col4 base_color, Col4 press_layer);
 
 		static inline Col4 mix(Col4 col1, Col4 col2, float factor) { return ImLerp(col1, col2, factor); }
-		static inline unsigned mix(unsigned col1, unsigned col2, float factor) { return (col2 > col1 ? ((col2 - col1) * factor + col1) : ((col1 - col2) * factor + col2)); }
+		static inline unsigned mix(unsigned v1, unsigned v2, float factor) { return (v1 + (v2 - v1) * factor); }
 
 		static inline float clamp(float value, float minv, float maxv) { return (value < minv) ? minv : (value > maxv) ? maxv : value; }
 

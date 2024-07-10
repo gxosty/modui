@@ -13,7 +13,7 @@ namespace modui::ui
 		virtual Widget* set_value(float value) override;
 		float get_value();
 
-		virtual Widget* on_slide(ButtonInputCallback callback);
+		virtual Widget* on_slide(ButtonInputCallback callback) override;
 
 		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
 

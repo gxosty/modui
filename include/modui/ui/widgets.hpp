@@ -1,6 +1,7 @@
 #pragma once
 
 #include "button/button.hpp"
+#include "button/iconbutton.hpp"
 
 #include "card/card.hpp"
 
@@ -13,5 +14,7 @@
 #include "screen/screenmanager.hpp"
 
 #include "slider/slider.hpp"
+
+#include "switch/switch.hpp"
 
 #include "text/text.hpp"

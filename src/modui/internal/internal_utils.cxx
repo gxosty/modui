@@ -2,7 +2,7 @@
 
 namespace modui
 {
-	extern float __screen_density;
+	// extern float __screen_density;
 
 	namespace internal
 	{

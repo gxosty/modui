@@ -7,7 +7,7 @@ namespace modui::ui
 {
 	Text::Text(const std::string& text) : Widget(),
 		_text{text},
-		_font_size{utils::dp(12)}
+		_font_size{ImGui::GetFontSize()}
 	{
 		this->_size = Vec2(0.0f, 0.0f);
 		this->_side = modui::SIDE_LEFT;
@@ -54,27 +54,9 @@ namespace modui::ui
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
-		Vec2 size = this->_size;
+		Vec2 size = this->_calculated_size;
 
-		if (size.x == 0.0f)
-		{
-			this->_update_text_size_v(reserved_space.x - this->_padding.y - this->_padding.w);
-			size.x = this->_text_size_v.x + this->_padding.y + this->_padding.w;
-		}
-		else
-		{
-			if (size.x < 0.0f)
-			{
-				size.x = reserved_space.x + (size.x == MODUI_SIZE_WIDTH_FULL ? 0.0f : size.x);
-			}
-
-			this->_update_text_size_v(size.x - this->_padding.y - this->_padding.w);
-		}
-
-		if (size.y == 0.0f)
-		{
-			size.y = this->_text_size_v.y - this->_padding.x - this->_padding.z;
-		}
+		this->_update_text_size_v(size.x - this->_padding.y - this->_padding.w);
 
 		this->_pos = pos;
 
@@ -82,7 +64,7 @@ namespace modui::ui
 		text_pos.x += this->_padding.w;
 		text_pos.y += this->_padding.x;
 
-		draw_list->AddText(ImGui::GetFont(), this->_font_size, text_pos, theme().on_surface, this->_text.c_str(), nullptr, size.x);
+		draw_list->AddText(ImGui::GetFont(), this->_font_size, text_pos, this->is_on_card() ? theme().on_surface_variant : theme().on_surface, this->_text.c_str(), nullptr, size.x);
 		// draw_list->AddRect(pos, pos + size, theme().primary);
 
 		return pos + size;
@@ -106,4 +88,65 @@ namespace modui::ui
 	{
 		return Vec2(0.0f, 0.0f);
 	}
+
+	float Text::calculate_size_x(float reserved_space_x)
+	{
+		float x = this->_size.x;
+
+		if (x == MODUI_SIZE_WIDTH_FULL)
+		{
+			x = reserved_space_x;
+			this->_update_text_size_v(x - this->_padding.y - this->_padding.w);
+		}
+		else if (x == MODUI_SIZE_WIDTH_WRAP)
+		{
+			this->_update_text_size_v(reserved_space_x - this->_padding.y - this->_padding.w);
+			x = this->_text_size_v.x + this->_padding.y + this->_padding.w;
+		}
+		else if (x < 0.0f)
+		{
+			x = reserved_space_x + x;
+			this->_update_text_size_v(x - this->_padding.y - this->_padding.w);
+		}
+
+		this->_calculated_size.x = x;
+
+		return x;
+	}
+
+	float Text::calculate_size_y(float reserved_space_y)
+	{
+		float y = this->_size.y;
+
+		if (y == MODUI_SIZE_WIDTH_FULL)
+		{
+			y = reserved_space_y;
+		}
+		else if (y == MODUI_SIZE_HEIGHT_WRAP)
+		{
+			y = this->_text_size_v.y + this->_padding.x + this->_padding.z;
+		}
+		else if (y < 0.0f)
+		{
+			y = reserved_space_y + y;
+		}
+
+		this->_calculated_size.y = y;
+
+		return y;
+	}
+
+	bool Text::is_on_card()
+	{
+		return Widget::is_on_card();
+	}
+
+	TitleText::TitleText(const std::string& text) : Text(text)
+	{
+		this->set_font_size(ImGui::GetFontSize() * 1.2f);
+	}
+
+	TitleText* TitleText::init(const std::string& text) { return new TitleText(text); }
+
+	bool TitleText::is_on_card() { return false; }
 }

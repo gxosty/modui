@@ -13,9 +13,9 @@ namespace modui::ui
 		// virtual BaseButton* add_widget(Widget* widget) = 0;
 		// virtual BaseButton* remove_widget(Widget* widget) = 0;
 
-		virtual Widget* on_press(ButtonInputCallback callback);
-		virtual Widget* on_hold(ButtonInputCallback callback);
-		virtual Widget* on_release(ButtonInputCallback callback);
+		virtual Widget* on_press(ButtonInputCallback callback) override;
+		virtual Widget* on_hold(ButtonInputCallback callback) override;
+		virtual Widget* on_release(ButtonInputCallback callback) override;
 
 		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
 

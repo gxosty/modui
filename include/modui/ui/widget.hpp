@@ -60,11 +60,16 @@ namespace modui::ui
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* on_press(ButtonInputCallback callback);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* on_hold(ButtonInputCallback callback);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* on_release(ButtonInputCallback callback);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* on_slide(ButtonInputCallback callback);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_text(const std::string& text);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_font_size(float font_size);
 
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_icon(ImageID icon);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_icon_size(float icon_size);
+
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_value(float value);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_state(bool state);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_padding(Vec2 padding);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_padding(Vec4 padding);
@@ -83,6 +88,11 @@ namespace modui::ui
 		                            Vec2    get_spacing();
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_name(const std::string& name);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_screen(const std::string& screen_name);
+
+		// For custom widgets and internal use!
+		virtual float calculate_size_x(float reserved_space_x);
+		virtual float calculate_size_y(float reserved_space_y);
 
 	protected:
 		int _id;
@@ -91,13 +101,21 @@ namespace modui::ui
 
 		Vec2 _pos;
 		Vec2 _size;
+		Vec2 _calculated_size;
 		Vec4 _padding;
 		Vec2 _spacing;
 
 		Theme** _theme;
 		std::vector<Widget*> _children;
 
+		Vec2 calculate_size(Vec2 reserved_space);
+
+		static void push_on_card();
+		static void pop_on_card();
+		static bool is_on_card();
+
 	private:
+		static int _on_card;
 		Widget* _root_widget;
 
 		void _set_parent(core::BaseWidget* bwidget);

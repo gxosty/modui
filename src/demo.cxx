@@ -27,13 +27,15 @@ class MyApp : public modui::App
 public:
 	MyApp() : modui::App("MyApp")
 	{
-		this->set_window_fullscreen(false);
-		this->set_window_size(Vec2(600, 300));
+		this->set_window_size(Vec2(480, 640));
+		this->set_window_fullscreen(true);
 	}
 
 	virtual ui::Widget* build() override
 	{
 		this->screen_manager = ui::ScreenManager::init();
+
+		ImageID test_img = modui::image::Image::load_image("..\\test_img.png");
 
 		return
 		this->screen_manager->add(
@@ -42,95 +44,72 @@ public:
 					ui::ScrollLayout::init()
 						->add(
 							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
-								->set_padding(DP(5))
-								->set_spacing(DP(5))
+								->set_padding(DP(10.0f))
+								->set_spacing(DP(10.0f))
+								->set_size_x(MODUI_SIZE_WIDTH_FULL)
+								->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
 								->add(
-									ui::Text::init("ModUI Demo"),
-									
-									ui::Button::init("Button"),
-									
-									ui::Button::init("width dp(150) button")
-										->set_size_x(DP(150)),
-									
-									ui::Button::init("Full width button")
-										->set_size_x(MODUI_SIZE_WIDTH_FULL),
-
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_spacing(DP(5))
-										->set_size_y(0.0f)
+										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
 										->add(
-											ui::Text::init("Checkboxes")
-												->set_size_y(DP(20)),
+											ui::Text::init("Dark Theme")
+												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
 
-											ui::Checkbox::init(),
-											ui::Checkbox::init()
-										),
+											ui::Widget::init()
+												->set_size_x(MODUI_SIZE_WIDTH_FULL),
 
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_spacing(DP(5))
-										->set_size_y(0.0f)
-										->add(
-											ui::Text::init("Slider")
-												->set_size_y(DP(20)),
+											ui::Switch::init()
+												->on_release(MODUI_CALLBACK(this) {
+													if (this->dark_theme)
+													{
+														this->set_current_theme(DEFAULT_THEME_LIGHT);
+													}
+													else
+													{
+														this->set_current_theme(DEFAULT_THEME_DARK);
+													}
 
-											ui::Slider::init(0.0f, 100.0f)
-												->on_slide(MODUI_CALLBACK(this) {
-													ui::Text* text = (ui::Text*)this->screen_manager->find_widget_by_id("slider_value");
-													ui::Slider* slider = (ui::Slider*)this_widget;
-
-													text->set_text("Slider value: " + std::to_string(slider->get_value()));
+													this->dark_theme = !this->dark_theme;
 												})
 										),
 
-									ui::Text::init("Slider value: 0.0")
-										->set_id("slider_value"),
+									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+										->add(
+											ui::Widget::init()
+												->set_size_x(MODUI_SIZE_WIDTH_FULL),
+
+											ui::Button::init("Button Sample"),
+											ui::IconButton::init(test_img),
+
+											ui::Widget::init()
+												->set_size_x(MODUI_SIZE_WIDTH_FULL)
+										),
 
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_spacing(DP(5))
+										->set_spacing(DP(10))
 										->add(
-											ui::FilledCard::init()
-												// ->set_size_x(DP(150))
-												->set_size_y(0.0f) // 0.0f means adaptive height
-												->set_padding(DP(10))
-												->set_spacing(DP(5))
+											ui::FilledCard::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+												->set_padding(DP(20))
+												->set_spacing(DP(10))
+												->set_size_x(MODUI_SIZE_WIDTH_FULL)
 												->add(
-													ui::Text::init("Card Title 1")
-														->set_font_size(DP(18)),
+													ui::TitleText::init("Card Title"),
 
-													ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
-
-													ui::Button::init("Open")
+													ui::Text::init("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.")
 												),
 
-											ui::FilledCard::init()
-												// ->set_size_x(DP(150))
-												->set_size_y(0.0f)
-												->set_padding(DP(10))
-												->set_spacing(DP(5))
+											ui::FilledCard::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+												->set_padding(DP(20))
+												->set_spacing(DP(10))
+												->set_size_x(MODUI_SIZE_WIDTH_FULL)
 												->add(
-													ui::Text::init("Card Title 2")
-														->set_font_size(DP(18)),
+													ui::TitleText::init("Card Title"),
 
-													ui::Text::init("Example card content, just for demo (or call it a placeholder)"),
-
-													ui::Button::init("Open")
+													ui::Text::init("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.")
 												)
 										),
 
-									ui::Button::init("Toggle theme")
-										->on_release(MODUI_CALLBACK(this) {
-											if (!this->dark_theme)
-											{
-												this->set_current_theme(DEFAULT_THEME_DARK);
-												this->dark_theme = true;
-											}
-											else
-											{
-												this->set_current_theme(DEFAULT_THEME_LIGHT);
-												this->dark_theme = false;
-											}
-										})
-
+									ui::Slider::init(0.0f, 100.0f)
 								)
 						)
 				)
@@ -167,7 +146,7 @@ int main()
 	//ImGui_ImplWin32_EnableDpiAwareness();
 	WNDCLASSEXW wc = { sizeof(wc), CS_OWNDC, WndProc, 0L, 0L, GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"ImGui Example", nullptr };
 	::RegisterClassExW(&wc);
-	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui Win32+OpenGL3 Example", WS_OVERLAPPEDWINDOW, 100, 100, 470, 600, nullptr, nullptr, wc.hInstance, nullptr);
+	HWND hwnd = ::CreateWindowW(wc.lpszClassName, L"Dear ImGui Win32+OpenGL3 Example", WS_OVERLAPPEDWINDOW, 100, 100, 480, 640, nullptr, nullptr, wc.hInstance, nullptr);
 
 	// Initialize OpenGL
 	if (!CreateDeviceWGL(hwnd, &g_MainWindow))
@@ -207,7 +186,8 @@ int main()
 	// - Read 'docs/FONTS.md' for more instructions and details.
 	// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
 	//io.Fonts->AddFontDefault();
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 48.0f);
+	// io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
+	io.Fonts->AddFontFromFileTTF("../DroidSans.ttf", 16.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
@@ -216,7 +196,8 @@ int main()
 
 	// Our state
 	ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 1.00f);
-	modui::set_screen_density(1.666667f);
+	modui::set_screen_density(0.70625f);
+	// modui::set_ui_scale(1.1f);
 	MyApp* app = new MyApp();
 
 	// Main loop

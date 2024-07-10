@@ -1,4 +1,5 @@
 #include <modui/app.hpp>
+#include <modui/ui/button/button.hpp>
 #include "internal/internal_core.hpp"
 #include "internal/internal_utils.hpp"
 
@@ -10,11 +11,12 @@
 namespace modui
 {
 	App::App() :
-		_fullscreen{true},
+		_fullscreen{false},
 		_root_widget{nullptr},
 		_window_title{"Window " + std::to_string(modui::internal::__get_next_id_for_widget())},
 		_prerendered{false},
-		_rendering{false}
+		_rendering{false},
+		_window_open{true}
 	{
 		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_LIGHT)));
 		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_DARK)));
@@ -54,6 +56,9 @@ namespace modui
 		dark_theme().inverse_on_surface        = MODUI_COLOR_HEX(0xFF322F35);
 		dark_theme().surface_tint              = MODUI_COLOR_HEX(0xFFD0BCFF);
 
+		dark_theme().outline                   = MODUI_COLOR_HEX(0xFF938F99);
+		dark_theme().outline_variant           = MODUI_COLOR_HEX(0xFF49454F);
+
 		this->set_current_theme(DEFAULT_THEME_LIGHT);
 	};
 
@@ -61,53 +66,6 @@ namespace modui
 	{
 		this->set_window_title(window_title);
 	}
-
-	// void App::run()
-	// {
-	// 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-	// 	this->_fullscreen = true;
-
-	// 	bool done = false;
-
-	// 	while (!done)
-	// 	{
-	// 		SDL_Event event;
-	// 		while (SDL_PollEvent(&event))
-	// 		{
-	// 			ImGui_ImplSDL2_ProcessEvent(&event);
-	// 			if (event.type == SDL_QUIT)
-	// 				done = true;
-	// 			if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(window))
-	// 				done = true;
-	// 		}
-
-	// 		// Start the Dear ImGui frame
-	// 		ImGui_ImplOpenGL3_NewFrame();
-	// 		ImGui_ImplSDL2_NewFrame();
-	// 		ImGui::NewFrame();
-
-	// 		if (!this->_prerendered)
-	// 		{
-	// 			this->_pre_render();
-	// 		}
-
-	// 		this->_render();
-
-	// 		// Rendering
-	// 		ImGui::Render();
-	// 		glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-	// 		glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-	// 		glClear(GL_COLOR_BUFFER_BIT);
-	// 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	// 		SDL_GL_SwapWindow(window);
-	// 	}
-
-	// 	this->_fullscreen = false;
-	// 	this->_post_render();
-
-	// 	return;
-	// }
 
 	App* App::set_window_title(const std::string& window_title)
 	{
@@ -127,6 +85,13 @@ namespace modui
 		return this;
 	}
 
+	App* App::set_window_open(bool open)
+	{
+		this->_window_open = open;
+
+		return this;
+	}
+
 	void App::pre_render()
 	{
 		if (this->_prerendered) return;
@@ -134,6 +99,12 @@ namespace modui
 		modui::internal::__set_current_app(this);
 		this->_root_widget = this->build()->build_widget();
 		this->_root_widget->pre_render();
+		this->_window_close_button = ui::Button::init()
+			->set_size(Vec2(utils::dp(20), utils::dp(20)))
+			->on_release(MODUI_CALLBACK(this) {
+				this->_window_open = false;
+			});
+		this->_window_close_button->pre_render();
 		modui::internal::__set_current_app(nullptr);
 
 		bool opened = false;
@@ -150,17 +121,23 @@ namespace modui
 
 	void App::render()
 	{
-		int window_flags = 0;
+		if (!this->_window_open) return;
+
+		int window_flags =
+			  ImGuiWindowFlags_NoCollapse
+			| ImGuiWindowFlags_NoScrollbar
+			| ImGuiWindowFlags_NoScrollWithMouse
+			| ImGuiWindowFlags_NoTitleBar;
+
+		int pop_style_var_count = 9;
+		int pop_style_col_count = 5;
 
 		if (this->_fullscreen)
 		{
-			window_flags = \
+			window_flags =
 				  ImGuiWindowFlags_NoTitleBar
 				| ImGuiWindowFlags_NoResize
-				| ImGuiWindowFlags_NoMove
-				| ImGuiWindowFlags_NoCollapse
-				| ImGuiWindowFlags_NoScrollbar
-				| ImGuiWindowFlags_NoScrollWithMouse;
+				| ImGuiWindowFlags_NoMove;
 
 			ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 			ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
@@ -170,9 +147,12 @@ namespace modui
 
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, theme().surface);
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, theme().surface);
+		ImGui::PushStyleColor(ImGuiCol_ResizeGrip, 0);
+		ImGui::PushStyleColor(ImGuiCol_ResizeGripHovered, 0);
+		ImGui::PushStyleColor(ImGuiCol_ResizeGripActive, theme().secondary);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, this->_fullscreen ? 0.0f : utils::dp(15));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
@@ -181,23 +161,26 @@ namespace modui
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.0f, 0.0f));
 
-		if (!ImGui::Begin(this->_window_title.c_str(), NULL, window_flags))
+		if (!ImGui::Begin(this->_window_title.c_str(), &this->_window_open, window_flags))
 		{
 			ImGui::End();
 
-			ImGui::PopStyleVar(9);
-			ImGui::PopStyleColor(2);
+			ImGui::PopStyleVar(pop_style_var_count);
+			ImGui::PopStyleColor(pop_style_col_count);
 			return;
 		}
 
 
 		if (!ImGui::IsWindowCollapsed())
 		{
+
 			modui::internal::__set_current_app(this);
 			this->_rendering = true;
+			if (!this->_fullscreen) _render_window_title();
 			Vec2 cursor_pos = ImGui::GetCursorScreenPos();
 			Vec2 avail_size = ImGui::GetContentRegionAvail();
 
+			this->_root_widget->calculate_size(avail_size);
 			this->_root_widget->render(cursor_pos, avail_size);
 			modui::internal::__set_current_app(nullptr);
 			this->_rendering = false;
@@ -205,8 +188,8 @@ namespace modui
 
 		ImGui::End();
 
-		ImGui::PopStyleVar(9);
-		ImGui::PopStyleColor(2);
+		ImGui::PopStyleVar(pop_style_var_count);
+		ImGui::PopStyleColor(pop_style_col_count);
 	}
 
 	void App::post_render()
@@ -236,8 +219,28 @@ namespace modui
 		return this->_draw_list_splitter;
 	}
 
+	bool App::is_window_open()
+	{
+		return this->_window_open;
+	}
+
 	bool App::is_rendering()
 	{
 		return this->_rendering;
+	}
+
+	void App::_render_window_title()
+	{
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+
+		Vec2 cursor_pos = ImGui::GetCursorScreenPos();
+		Vec2 title_pos = Vec2(cursor_pos.x + utils::dp(15), cursor_pos.y + utils::dp(5));
+		draw_list->AddText(ImGui::GetFont(), utils::dp(20), title_pos, this->get_current_theme()().on_surface, this->_window_title.c_str(), nullptr);
+
+		Vec2 close_button_pos = Vec2(cursor_pos.x + ImGui::GetContentRegionAvail().x - utils::dp(25), cursor_pos.y + utils::dp(5));
+		this->_window_close_button->calculate_size(Vec2(utils::dp(20), utils::dp(20)));
+		this->_window_close_button->render(close_button_pos, Vec2(utils::dp(20), utils::dp(20)));
+
+		ImGui::SetCursorScreenPos(Vec2(cursor_pos.x, cursor_pos.y + utils::dp(25)));
 	}
 }
