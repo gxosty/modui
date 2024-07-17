@@ -10,10 +10,10 @@ namespace modui::image
 	{
 	public:
 		static ImageID load_image(const std::string& file_path);
-		static ImageID load_image_from_memory(void* buffer, unsigned buffer_size);
+		static ImageID load_image_from_memory(void* buffer, unsigned buffer_size = -1);
 		
 		static ImageID load_svg(const std::string& file_path);
-		static ImageID load_svg_from_memory(void* buffer, unsigned buffer_size);
+		static ImageID load_svg_from_memory(char* buffer /* null terminated */);
 
 		static void unload(ImageID image);
 

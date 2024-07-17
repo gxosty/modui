@@ -1,5 +1,6 @@
 #include <modui/core/image/image.hpp>
 #include <modui/core/image/rasterimage.hpp>
+#include <modui/core/image/vectorimage.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define GL_CLAMP_TO_EDGE 0x812F
@@ -42,6 +43,8 @@ namespace modui::image
 
 	ImageID Image::load_image_from_memory(void* buffer, unsigned buffer_size)
 	{
+		if (buffer_size == -1) buffer_size = strlen((char*)buffer);
+
 		int image_width = 0;
 		int image_height = 0;
 		stbi_uc* image_data = stbi_load_from_memory((stbi_uc*)buffer, buffer_size, &image_width, &image_height, NULL, 4);
@@ -79,29 +82,13 @@ namespace modui::image
 
 	ImageID Image::load_svg(const std::string& file_path)
 	{
-		FILE* file = fopen(file_path.c_str(), "rb");
-
-		fseek(file, 0, SEEK_END);
-		size_t file_size = ftell(file);
-
-		char* buffer = (char*)malloc(file_size);
-		if (!buffer)
-		{
-			fclose(file);
-			return nullptr;
-		}
-
-		fseek(file, 0, SEEK_SET);
-		file_size = fread((void*)buffer, sizeof(char), file_size, file);
-		fclose(file);
-
-		auto ret = Image::load_svg_from_memory(buffer, file_size);
-		free(buffer);
-		return ret;
+		NSVGimage* image = nsvgParseFromFile(file_path.c_str(), "px", 96 /* seems like this parameter is ignored */);
+		return new VectorImage(image);
 	}
 
-	ImageID Image::load_svg_from_memory(void* buffer, unsigned buffer_size)
+	ImageID Image::load_svg_from_memory(char* buffer)
 	{
-		return nullptr;
+		NSVGimage* image = nsvgParse(buffer, "px", 96);
+		return new VectorImage(image);
 	}
 }

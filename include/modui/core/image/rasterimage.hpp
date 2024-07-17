@@ -9,7 +9,7 @@ namespace modui::image
 	public:
 		RasterImage(/* GLuint */ ImTextureID texture, unsigned width, unsigned height);
 
-		virtual void draw(Vec2 pos, Vec2 size, Col32 color) override;
+		void draw(Vec2 pos, Vec2 size, Col32 color) override;
 
 	private:
 		ImTextureID _texture;

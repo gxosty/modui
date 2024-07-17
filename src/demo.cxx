@@ -1,5 +1,4 @@
-#include <modui/app.hpp>
-#include <modui/ui/widgets.hpp>
+#include <modui/modui.hpp>
 
 #include <iostream>
 #include <cmath>
@@ -35,7 +34,11 @@ public:
 	{
 		this->screen_manager = ui::ScreenManager::init();
 
-		ImageID test_img = modui::image::Image::load_image("..\\test_img.png");
+		// this->set_current_theme(DEFAULT_THEME_DARK);
+
+		ImageID settings_img = modui::image::Image::load_svg("../src/modui/assets/icons/settings.svg");
+		ImageID rocket_img = modui::image::Image::load_svg("../src/modui/assets/icons/rocket_launch.svg");
+		ImageID star_img = modui::image::Image::load_svg("../src/modui/assets/icons/star.svg");
 
 		return
 		this->screen_manager->add(
@@ -74,12 +77,18 @@ public:
 										),
 
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+										->set_spacing(DP(10))
 										->add(
 											ui::Widget::init()
 												->set_size_x(MODUI_SIZE_WIDTH_FULL),
 
 											ui::Button::init("Button Sample"),
-											ui::IconButton::init(test_img),
+
+											ui::IconButton::init(settings_img),
+											ui::IconButton::init(rocket_img),
+											ui::IconButton::init(star_img),
+
+											// ui::IconButton::init(modui::icons::settings_outline),
 
 											ui::Widget::init()
 												->set_size_x(MODUI_SIZE_WIDTH_FULL)

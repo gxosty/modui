@@ -19,6 +19,7 @@ add_library( ${MODUI_LIB_NAME} SHARED
 
 	src/modui/core/image/image.cxx
 	src/modui/core/image/rasterimage.cxx
+	src/modui/core/image/vectorimage.cxx
 
 	src/modui/core/common.cxx
 	src/modui/core/exceptions.cxx
