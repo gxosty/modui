@@ -14,12 +14,12 @@ namespace modui::ui
 			modui::LayoutOrientation orientation = LAYOUT_ORIENTATION_VERTICAL
 		);
 
-		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
 
 		LinearLayout* set_orientation(modui::LayoutOrientation orientation) override;
 
-		virtual float calculate_size_x(float reserved_space_x) override;
-		virtual float calculate_size_y(float reserved_space_y) override;
+		float calculate_size_x(float reserved_space_x) override;
+		float calculate_size_y(float reserved_space_y) override;
 
 	private:
 		modui::LayoutOrientation _orientation;

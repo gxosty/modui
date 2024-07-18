@@ -10,12 +10,12 @@ namespace modui::ui
 	public:
 		BaseSlider(float min_value, float max_value);
 
-		virtual Widget* set_value(float value) override;
+		Widget* set_value(float value) override;
 		float get_value();
 
-		virtual Widget* on_slide(ButtonInputCallback callback) override;
+		Widget* on_slide(ButtonInputCallback callback) override;
 
-		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
 
 	private:
 		ButtonInputCallback _on_slide_callback;

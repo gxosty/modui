@@ -18,11 +18,11 @@ namespace modui::ui
 		Text* set_text(const std::string& text) override;
 		Text* set_font_size(float font_size) override;
 
-		virtual void pre_render() override;
-		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void pre_render() override;
+		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
 
-		virtual float calculate_size_x(float reserved_space_x) override;
-		virtual float calculate_size_y(float reserved_space_y) override;
+		float calculate_size_x(float reserved_space_x) override;
+		float calculate_size_y(float reserved_space_y) override;
 
 	private:
 		std::string _text;
@@ -44,6 +44,6 @@ namespace modui::ui
 		static TitleText* init(const std::string& text = "");
 
 	private:
-		virtual bool is_on_card() override;
+		bool is_on_card() override;
 	};
 }

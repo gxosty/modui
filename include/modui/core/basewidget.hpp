@@ -8,7 +8,7 @@ namespace modui::core
 		 * Base widget
 		 *
 		 * This is the lowest level of all widgets.
-		 * :class:`App` also derives from this
+		 * :class:`App` also inherits from this
 		 **/
 	public:
 		BaseWidget() = default;

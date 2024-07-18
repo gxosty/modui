@@ -14,12 +14,12 @@ namespace modui::ui
 		Checkbox* set_state(bool state) override;
 		bool get_state();
 
-		virtual Widget* on_release(ButtonInputCallback callback) override;
+		Checkbox* on_release(ButtonInputCallback callback) override;
 
-		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
 
-		virtual float calculate_size_x(float reserved_space_x) override;
-		virtual float calculate_size_y(float reserved_space_y) override;
+		float calculate_size_x(float reserved_space_x) override;
+		float calculate_size_y(float reserved_space_y) override;
 
 	private:
 		float _rounding;

@@ -39,6 +39,7 @@ public:
 		ImageID settings_img = modui::image::Image::load_svg("../src/modui/assets/icons/settings.svg");
 		ImageID rocket_img = modui::image::Image::load_svg("../src/modui/assets/icons/rocket_launch.svg");
 		ImageID star_img = modui::image::Image::load_svg("../src/modui/assets/icons/star.svg");
+		ImageID favorite_img = modui::image::Image::load_svg("../src/modui/assets/icons/favorite.svg");
 
 		return
 		this->screen_manager->add(
@@ -84,11 +85,12 @@ public:
 
 											ui::Button::init("Button Sample"),
 
-											ui::IconButton::init(settings_img),
-											ui::IconButton::init(rocket_img),
-											ui::IconButton::init(star_img),
+											ui::FilledIconButton::init(settings_img),
+											ui::FilledTonalIconButton::init(rocket_img),
+											ui::OutlinedIconButton::init(star_img),
+											ui::IconButton::init(favorite_img),
 
-											// ui::IconButton::init(modui::icons::settings_outline),
+											// ui::FilledIconButton::init(modui::icons::settings_outline),
 
 											ui::Widget::init()
 												->set_size_x(MODUI_SIZE_WIDTH_FULL)

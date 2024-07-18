@@ -27,7 +27,7 @@ namespace modui::ui
 		return this->_state;
 	}
 
-	Widget* Checkbox::on_release(ButtonInputCallback callback)
+	Checkbox* Checkbox::on_release(ButtonInputCallback callback)
 	{
 		BaseButton::on_release(MODUI_CALLBACK(this, callback) {
 			this->set_state(!this->get_state());

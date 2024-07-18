@@ -14,7 +14,7 @@ namespace modui::ui
 			modui::LayoutOrientation orientation = LAYOUT_ORIENTATION_VERTICAL
 		);
 
-		virtual Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
 
 	private:
 		float _rounding;

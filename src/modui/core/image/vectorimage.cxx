@@ -34,8 +34,6 @@ namespace modui::image
 
 	void VectorImage::_rasterize_image(const Vec2& size)
 	{
-		static constexpr float s_scale = 1.5f;
-
 		if (this->_texture != 0)
 		{
 			glDeleteTextures(1, (const GLuint*)&this->_texture);
@@ -51,8 +49,15 @@ namespace modui::image
 		unsigned image_width = _last_min_size;
 		unsigned image_height = _last_min_size;
 
-		size_t image_data_size = size.x * size.y * 4;
-		unsigned char image_data[image_data_size * size_t(s_scale * 2)];
+		if (image_width * image_height <= 2500)
+		{
+			image_width *= 2;
+			image_height *= 2;
+			image_scale *= 2;
+		}
+
+		size_t image_data_size = image_width * image_height * 4;
+		unsigned char image_data[image_data_size];
 
 		NSVGrasterizer* rasterizer = nsvgCreateRasterizer();
 
@@ -62,7 +67,7 @@ namespace modui::image
 			return;
 		}
 
-		nsvgRasterize(rasterizer, this->_image, 0.0f, 0.0f, image_scale * s_scale, image_data, image_width * s_scale, image_height * s_scale, image_width * s_scale * 4);
+		nsvgRasterize(rasterizer, this->_image, 0.0f, 0.0f, image_scale, image_data, image_width, image_height, image_width * 4);
 		nsvgDeleteRasterizer(rasterizer);
 
 		GLuint image_texture;
@@ -84,6 +89,6 @@ namespace modui::image
 	#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
 		glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 	#endif
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width * s_scale, image_height * s_scale, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
 	}
 }
