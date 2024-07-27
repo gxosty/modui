@@ -5,7 +5,10 @@
 namespace modui::image
 {
 	RasterImage::RasterImage(ImTextureID texture, unsigned width, unsigned height)
-		: _texture{texture}, _width{width}, _height{height} {}
+		: _texture{texture}, _width{width}, _height{height}
+	{
+		this->_image_type = ImageType::RASTER_IMAGE;
+	}
 
 	void RasterImage::draw(Vec2 pos, Vec2 size, Col32 color)
 	{

@@ -6,6 +6,7 @@
 #include <imgui/imgui.h>
 
 #include <string>
+#include <vector>
 
 namespace modui
 {
@@ -38,6 +39,8 @@ namespace modui
 		void render();
 		void post_render();
 
+		void add_callback_to_queue(ui::Widget* widget, ButtonInputCallback* callback);
+
 	private:
 		ImGuiWindow* _window;
 		ui::Widget* _root_widget;
@@ -50,9 +53,14 @@ namespace modui
 		bool _prerendered;
 		bool _rendering;
 
+		std::vector<
+			std::pair<ui::Widget*, ButtonInputCallback*>
+		> _queued_callbacks;
+
 		ImDrawListSplitter _draw_list_splitter;
 
 		ui::Widget* _window_close_button;
 		void _render_window_title();
+		void _drain_queued_callbacks();
 	};
 }

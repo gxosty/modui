@@ -60,6 +60,7 @@ namespace modui
 		dark_theme().outline_variant           = MODUI_COLOR_HEX(0xFF49454F);
 
 		this->set_current_theme(DEFAULT_THEME_LIGHT);
+		this->_queued_callbacks.reserve(10);
 	};
 
 	App::App(const std::string& window_title) : App()
@@ -174,14 +175,17 @@ namespace modui
 		if (!ImGui::IsWindowCollapsed())
 		{
 
-			modui::internal::__set_current_app(this);
 			this->_rendering = true;
+			modui::internal::__set_current_app(this);
+
 			if (!this->_fullscreen) _render_window_title();
 			Vec2 cursor_pos = ImGui::GetCursorScreenPos();
 			Vec2 avail_size = ImGui::GetContentRegionAvail();
 
 			this->_root_widget->calculate_size(avail_size);
 			this->_root_widget->render(cursor_pos, avail_size);
+			this->_drain_queued_callbacks();
+
 			modui::internal::__set_current_app(nullptr);
 			this->_rendering = false;
 		}
@@ -197,6 +201,11 @@ namespace modui
 		this->_prerendered = false;
 		delete this->_root_widget;
 		this->_root_widget = nullptr;
+	}
+
+	void App::add_callback_to_queue(ui::Widget* widget, ButtonInputCallback* callback)
+	{
+		this->_queued_callbacks.emplace_back(widget, callback);
 	}
 
 	ThemeManager& App::get_theme_manager()
@@ -242,5 +251,15 @@ namespace modui
 		this->_window_close_button->render(close_button_pos, Vec2(utils::dp(20), utils::dp(20)));
 
 		ImGui::SetCursorScreenPos(Vec2(cursor_pos.x, cursor_pos.y + utils::dp(25)));
+	}
+
+	void App::_drain_queued_callbacks()
+	{
+		for (auto& i : this->_queued_callbacks)
+		{
+			(*(i.second))(i.first);
+		}
+
+		this->_queued_callbacks.clear();
 	}
 }

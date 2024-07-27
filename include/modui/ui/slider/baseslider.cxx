@@ -1,4 +1,5 @@
 #include <modui/ui/slider/baseslider.hpp>
+#include <modui/app.hpp>
 
 #include <iostream>
 
@@ -27,7 +28,7 @@ namespace modui::ui
 
 	void BaseSlider::on_slide_call()
 	{
-		this->_on_slide_callback(this);
+		modui::get_current_app()->add_callback_to_queue(this, &this->_on_slide_callback);
 	}
 
 	Vec2 BaseSlider::render(Vec2 pos, Vec2 reserved_space)

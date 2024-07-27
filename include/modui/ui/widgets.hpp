@@ -10,6 +10,8 @@
 #include "layout/linearlayout.hpp"
 #include "layout/scrolllayout.hpp"
 
+#include "list/listitem.hpp"
+
 #include "screen/screen.hpp"
 #include "screen/screenmanager.hpp"
 

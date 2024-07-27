@@ -39,8 +39,8 @@ namespace modui::ui
 
 	Vec2 Checkbox::render(Vec2 pos, Vec2 reserved_space)
 	{
-		static const Vec2 __box_size = Vec2(utils::dp(20), utils::dp(20));
-		static const float __outline_width = utils::dp(2);
+		const Vec2 __box_size = Vec2(utils::dp(18), utils::dp(18));
+		const float __outline_width = utils::dp(2);
 
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();

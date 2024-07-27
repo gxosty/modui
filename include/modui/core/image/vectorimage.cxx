@@ -17,7 +17,10 @@
 namespace modui::image
 {
 	VectorImage::VectorImage(NSVGimage* image)
-		: _image{image}, _texture{0}, _last_min_size(-1) {}
+		: _image{image}, _texture{0}, _last_min_size(-1)
+	{
+		this->_image_type = ImageType::VECTOR_IMAGE;
+	}
 
 	void VectorImage::draw(Vec2 pos, Vec2 size, Col32 color)
 	{

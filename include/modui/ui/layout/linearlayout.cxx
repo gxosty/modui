@@ -6,7 +6,7 @@ namespace modui::ui
 		_orientation{orientation}
 	{
 		this->_size = Vec2(
-			MODUI_SIZE_WIDTH_WRAP,
+			MODUI_SIZE_WIDTH_FULL,
 			MODUI_SIZE_HEIGHT_WRAP
 		);
 	};

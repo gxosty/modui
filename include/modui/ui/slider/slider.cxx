@@ -15,9 +15,9 @@ namespace modui::ui
 
 	Vec2 Slider::render(Vec2 pos, Vec2 reserved_space)
 	{
-		static const float __ripple_radius = utils::dp(20);
-		static const float __circle_radius = utils::dp(10);
-		static const float __slider_thickness = utils::dp(6);
+		const float __ripple_radius = utils::dp(20);
+		const float __circle_radius = utils::dp(10);
+		const float __slider_thickness = utils::dp(6);
 
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();

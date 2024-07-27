@@ -7,12 +7,12 @@
 namespace modui::ui
 {
 	Button::Button(const std::string& text) : BaseButton(),
-		_text{text},
 		_font_size{ImGui::GetFontSize()},
 		_press_factor{0.0f}
 	{
 		this->_size = Vec2(MODUI_SIZE_WIDTH_WRAP, utils::dp(40));
 		this->_rounding = this->_size.y / 2.0f;
+		this->set_text(text);
 	}
 
 	Button* Button::init(const std::string& text) { return new Button(text); }
@@ -100,7 +100,7 @@ namespace modui::ui
 			return;
 		}
 
-		this->_text_size_v = ImGui::CalcTextSize(this->_text.c_str()) * (this->_font_size / ImGui::GetFontSize());
+		this->_text_size_v = ImGui::GetFont()->CalcTextSizeA(this->_font_size, FLT_MAX, 0.0f, this->_text.c_str(), nullptr);
 	}
 
 	float Button::calculate_size_x(float reserved_space_x)

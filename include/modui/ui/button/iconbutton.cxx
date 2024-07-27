@@ -1,4 +1,5 @@
 #include <modui/ui/button/iconbutton.hpp>
+#include <modui/core/image/selectableimage.hpp>
 
 namespace modui::ui
 {
@@ -28,7 +29,12 @@ namespace modui::ui
 	IconButton* IconButton::set_state(bool state)
 	{
 		this->_state = state;
-		this->_toggleable = true;
+		return this;
+	}
+
+	IconButton* IconButton::set_toggleable(bool toggleable)
+	{
+		this->_toggleable = toggleable;
 		return this;
 	}
 
@@ -86,7 +92,12 @@ namespace modui::ui
 		Vec2 icon_pos = pos + (size - icon_size) / 2.0f;
 
 		if (this->_icon != nullptr)
+		{
+			if (this->_icon->get_image_type() == modui::image::ImageType::SELECTABLE)
+				reinterpret_cast<modui::image::SelectableImage*>(this->_icon)->set_selected(this->_state);
+
 			this->_icon->draw(icon_pos, icon_size, col1);
+		}
 
 		return pos + size;
 	}
@@ -139,48 +150,12 @@ namespace modui::ui
 
 
 
-	FilledIconButton::FilledIconButton(ImageID icon) : BaseButton(),
-		_icon{icon},
-		_icon_size{utils::dp(24)},
-		_press_factor{0.0f},
-		_state{true},
-		_toggleable{false}
+	FilledIconButton::FilledIconButton(ImageID icon) : IconButton(icon)
 	{
-		this->_size = Vec2(utils::dp(40), utils::dp(40));
-		this->_rounding = this->_size.y / 2.0f;
-		BaseButton::on_release(MODUI_CALLBACK(this) {
-			if (this->_toggleable)
-				this->set_state(!this->get_state());
-		});
+		this->set_state(true);
 	}
 
 	FilledIconButton* FilledIconButton::init(ImageID icon) { return new FilledIconButton(icon); }
-
-	FilledIconButton* FilledIconButton::set_icon(ImageID icon) { this->_icon = icon; return this; }
-
-	const ImageID FilledIconButton::get_icon() { return this->_icon; }
-
-	FilledIconButton* FilledIconButton::set_icon_size(float icon_size) { this->_icon_size = icon_size; return this; }
-
-	FilledIconButton* FilledIconButton::set_state(bool state)
-	{
-		this->_state = state;
-		this->_toggleable = true;
-		return this;
-	}
-
-	bool FilledIconButton::get_state() { return this->_state; }
-
-	FilledIconButton* FilledIconButton::on_release(ButtonInputCallback callback)
-	{
-		BaseButton::on_release(MODUI_CALLBACK(this, callback) {
-			if (this->_toggleable)
-				this->set_state(!this->get_state());
-			callback(this);
-		});
-
-		return this;
-	}
 
 	Vec2 FilledIconButton::render(Vec2 pos, Vec2 reserved_space)
 	{
@@ -233,99 +208,24 @@ namespace modui::ui
 		Vec2 icon_pos = pos + (size - icon_size) / 2.0f;
 
 		if (this->_icon != nullptr)
+		{
+			if (this->_icon->get_image_type() == modui::image::ImageType::SELECTABLE)
+				reinterpret_cast<modui::image::SelectableImage*>(this->_icon)->set_selected(this->_state);
+
 			this->_icon->draw(icon_pos, icon_size, col2);
+		}
 
 		return pos + size;
 	}
 
-	float FilledIconButton::calculate_size_x(float reserved_space_x)
+
+
+	FilledTonalIconButton::FilledTonalIconButton(ImageID icon) : IconButton(icon)
 	{
-		float x = this->_size.x;
-
-		if (x == MODUI_SIZE_WIDTH_FULL)
-		{
-			x = reserved_space_x;
-		}
-		else if (x == MODUI_SIZE_WIDTH_WRAP)
-		{
-			x = utils::dp(40);
-		}
-		else if (x < 0.0f)
-		{
-			x = reserved_space_x + x;
-		}
-
-		this->_calculated_size.x = x;
-
-		return x;
-	}
-
-	float FilledIconButton::calculate_size_y(float reserved_space_y)
-	{
-		float y = this->_size.y;
-
-		if (y == MODUI_SIZE_WIDTH_FULL)
-		{
-			y = reserved_space_y;
-		}
-		else if (y == MODUI_SIZE_HEIGHT_WRAP)
-		{
-			y = utils::dp(40);
-		}
-		else if (y < 0.0f)
-		{
-			y = reserved_space_y + y;
-		}
-
-		this->_calculated_size.y = y;
-
-		return y;
-	}
-
-
-
-	FilledTonalIconButton::FilledTonalIconButton(ImageID icon) : BaseButton(),
-		_icon{icon},
-		_icon_size{utils::dp(24)},
-		_press_factor{0.0f},
-		_state{true},
-		_toggleable{false}
-	{
-		this->_size = Vec2(utils::dp(40), utils::dp(40));
-		this->_rounding = this->_size.y / 2.0f;
-		BaseButton::on_release(MODUI_CALLBACK(this) {
-			if (this->_toggleable)
-				this->set_state(!this->get_state());
-		});
+		this->set_state(false);
 	}
 
 	FilledTonalIconButton* FilledTonalIconButton::init(ImageID icon) { return new FilledTonalIconButton(icon); }
-
-	FilledTonalIconButton* FilledTonalIconButton::set_icon(ImageID icon) { this->_icon = icon; return this; }
-
-	const ImageID FilledTonalIconButton::get_icon() { return this->_icon; }
-
-	FilledTonalIconButton* FilledTonalIconButton::set_icon_size(float icon_size) { this->_icon_size = icon_size; return this; }
-
-	FilledTonalIconButton* FilledTonalIconButton::set_state(bool state)
-	{
-		this->_state = state;
-		this->_toggleable = true;
-		return this;
-	}
-
-	bool FilledTonalIconButton::get_state() { return this->_state; }
-
-	FilledTonalIconButton* FilledTonalIconButton::on_release(ButtonInputCallback callback)
-	{
-		BaseButton::on_release(MODUI_CALLBACK(this, callback) {
-			if (this->_toggleable)
-				this->set_state(!this->get_state());
-			callback(this);
-		});
-
-		return this;
-	}
 
 	Vec2 FilledTonalIconButton::render(Vec2 pos, Vec2 reserved_space)
 	{
@@ -378,100 +278,24 @@ namespace modui::ui
 		Vec2 icon_pos = pos + (size - icon_size) / 2.0f;
 
 		if (this->_icon != nullptr)
+		{
+			if (this->_icon->get_image_type() == modui::image::ImageType::SELECTABLE)
+				reinterpret_cast<modui::image::SelectableImage*>(this->_icon)->set_selected(this->_state);
+
 			this->_icon->draw(icon_pos, icon_size, col2);
+		}
 
 		return pos + size;
 	}
 
-	float FilledTonalIconButton::calculate_size_x(float reserved_space_x)
+
+
+	OutlinedIconButton::OutlinedIconButton(ImageID icon) : IconButton(icon)
 	{
-		float x = this->_size.x;
-
-		if (x == MODUI_SIZE_WIDTH_FULL)
-		{
-			x = reserved_space_x;
-		}
-		else if (x == MODUI_SIZE_WIDTH_WRAP)
-		{
-			x = utils::dp(40);
-		}
-		else if (x < 0.0f)
-		{
-			x = reserved_space_x + x;
-		}
-
-		this->_calculated_size.x = x;
-
-		return x;
-	}
-
-	float FilledTonalIconButton::calculate_size_y(float reserved_space_y)
-	{
-		float y = this->_size.y;
-
-		if (y == MODUI_SIZE_WIDTH_FULL)
-		{
-			y = reserved_space_y;
-		}
-		else if (y == MODUI_SIZE_HEIGHT_WRAP)
-		{
-			y = utils::dp(40);
-		}
-		else if (y < 0.0f)
-		{
-			y = reserved_space_y + y;
-		}
-
-		this->_calculated_size.y = y;
-
-		return y;
-	}
-
-
-
-
-	OutlinedIconButton::OutlinedIconButton(ImageID icon) : BaseButton(),
-		_icon{icon},
-		_icon_size{utils::dp(24)},
-		_press_factor{0.0f},
-		_state{false},
-		_toggleable{false}
-	{
-		this->_size = Vec2(utils::dp(40), utils::dp(40));
-		this->_rounding = this->_size.y / 2.0f;
-		BaseButton::on_release(MODUI_CALLBACK(this) {
-			if (this->_toggleable)
-				this->set_state(!this->get_state());
-		});
+		this->set_state(false);
 	}
 
 	OutlinedIconButton* OutlinedIconButton::init(ImageID icon) { return new OutlinedIconButton(icon); }
-
-	OutlinedIconButton* OutlinedIconButton::set_icon(ImageID icon) { this->_icon = icon; return this; }
-
-	const ImageID OutlinedIconButton::get_icon() { return this->_icon; }
-
-	OutlinedIconButton* OutlinedIconButton::set_icon_size(float icon_size) { this->_icon_size = icon_size; return this; }
-
-	OutlinedIconButton* OutlinedIconButton::set_state(bool state)
-	{
-		this->_state = state;
-		this->_toggleable = true;
-		return this;
-	}
-
-	bool OutlinedIconButton::get_state() { return this->_state; }
-
-	OutlinedIconButton* OutlinedIconButton::on_release(ButtonInputCallback callback)
-	{
-		BaseButton::on_release(MODUI_CALLBACK(this, callback) {
-			if (this->_toggleable)
-				this->set_state(!this->get_state());
-			callback(this);
-		});
-
-		return this;
-	}
 
 	Vec2 OutlinedIconButton::render(Vec2 pos, Vec2 reserved_space)
 	{
@@ -536,52 +360,13 @@ namespace modui::ui
 		Vec2 icon_pos = pos + (size - icon_size) / 2.0f;
 
 		if (this->_icon != nullptr)
+		{
+			if (this->_icon->get_image_type() == modui::image::ImageType::SELECTABLE)
+				reinterpret_cast<modui::image::SelectableImage*>(this->_icon)->set_selected(this->_state);
+
 			this->_icon->draw(icon_pos, icon_size, col2);
+		}
 
 		return pos + size;
-	}
-
-	float OutlinedIconButton::calculate_size_x(float reserved_space_x)
-	{
-		float x = this->_size.x;
-
-		if (x == MODUI_SIZE_WIDTH_FULL)
-		{
-			x = reserved_space_x;
-		}
-		else if (x == MODUI_SIZE_WIDTH_WRAP)
-		{
-			x = utils::dp(40);
-		}
-		else if (x < 0.0f)
-		{
-			x = reserved_space_x + x;
-		}
-
-		this->_calculated_size.x = x;
-
-		return x;
-	}
-
-	float OutlinedIconButton::calculate_size_y(float reserved_space_y)
-	{
-		float y = this->_size.y;
-
-		if (y == MODUI_SIZE_WIDTH_FULL)
-		{
-			y = reserved_space_y;
-		}
-		else if (y == MODUI_SIZE_HEIGHT_WRAP)
-		{
-			y = utils::dp(40);
-		}
-		else if (y < 0.0f)
-		{
-			y = reserved_space_y + y;
-		}
-
-		this->_calculated_size.y = y;
-
-		return y;
 	}
 }

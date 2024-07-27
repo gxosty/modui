@@ -29,6 +29,7 @@ namespace modui::ui
 		const std::string& get_id();
 		Widget* find_widget_by_id(const std::string& id);
 
+		Widget* get_parent(); // ONLY ui::Widget*
 		Vec2 get_pos();
 
 		Widget* set_size(const Vec2& size);
@@ -63,13 +64,19 @@ namespace modui::ui
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* on_slide(ButtonInputCallback callback);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_text(const std::string& text);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_supporting_text(const std::string& supporting_text);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_trailing_text(const std::string& trailing_text);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_font_size(float font_size);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_icon(ImageID icon);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_leading_icon(ImageID leading_icon);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_icon_size(float icon_size);
+
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_trailing_widget(Widget* trailing_widget);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_value(float value);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_state(bool state);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_toggleable(bool toggleable);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_padding(Vec2 padding);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_padding(Vec4 padding);

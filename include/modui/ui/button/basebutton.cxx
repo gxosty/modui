@@ -1,4 +1,5 @@
 #include <modui/ui/button/basebutton.hpp>
+#include <modui/app.hpp>
 
 namespace modui::ui
 {
@@ -32,17 +33,17 @@ namespace modui::ui
 
 	void BaseButton::on_press_call()
 	{
-		this->_on_press_callback(this);
+		modui::get_current_app()->add_callback_to_queue(this, &this->_on_press_callback);
 	}
 
 	void BaseButton::on_hold_call()
 	{
-		this->_on_hold_callback(this);
+		modui::get_current_app()->add_callback_to_queue(this, &this->_on_hold_callback);
 	}
 
 	void BaseButton::on_release_call()
 	{
-		this->_on_release_callback(this);
+		modui::get_current_app()->add_callback_to_queue(this, &this->_on_release_callback);
 	}
 
 	Vec2 BaseButton::render(Vec2 pos, Vec2 reserved_space)

@@ -40,9 +40,9 @@ namespace modui::ui
 
 	Vec2 Switch::render(Vec2 pos, Vec2 reserved_space)
 	{
-		static const Vec2 __box_size = Vec2(utils::dp(52), utils::dp(32));
-		static const float __outline_width = utils::dp(2);
-		static const float __ripple_radius = utils::dp(20);
+		const Vec2 __track_size = Vec2(utils::dp(52), utils::dp(32));
+		const float __outline_width = utils::dp(2);
+		const float __ripple_radius = utils::dp(20);
 
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
@@ -93,11 +93,11 @@ namespace modui::ui
 			this->_state_factor
 		);
 
-		Vec2 box_pos = pos + (size - __box_size) / 2.0f;
-		Vec2 handle_pos = box_pos + Vec2(__box_size.x - __box_size.y / 2.0f - (__box_size.x - __box_size.y) * (1.0f - this->_state_factor), __box_size.y / 2.0f);
+		Vec2 track_pos = pos + (size - __track_size) / 2.0f;
+		Vec2 handle_pos = track_pos + Vec2(__track_size.x - __track_size.y / 2.0f - (__track_size.x - __track_size.y) * (1.0f - this->_state_factor), __track_size.y / 2.0f);
 
-		draw_list->AddRectFilled(box_pos, box_pos + __box_size, utils::Col4to32(fill_color), MODUI_ROUNDING_FULL);
-		draw_list->AddRect(box_pos, box_pos + __box_size, utils::Col4to32(outline_color), MODUI_ROUNDING_FULL, 0, __outline_width);
+		draw_list->AddRectFilled(track_pos, track_pos + __track_size, utils::Col4to32(fill_color), MODUI_ROUNDING_FULL);
+		draw_list->AddRect(track_pos, track_pos + __track_size, utils::Col4to32(outline_color), MODUI_ROUNDING_FULL, 0, __outline_width);
 		draw_list->AddCircleFilled(handle_pos, handle_radius, utils::Col4to32(handle_color));
 
 		draw_list->AddCircleFilled(handle_pos, __ripple_radius, ripple_color);

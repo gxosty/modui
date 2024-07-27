@@ -26,6 +26,10 @@ namespace modui::ui
 	Widget* Widget::add(Widget* widget)
 	{
 		widget->_set_parent(this);
+
+		if (this->_root_widget)
+			widget->_set_root_widget(this->_root_widget);
+
 		this->_children.push_back(widget);
 		return this;
 	}
@@ -77,6 +81,11 @@ namespace modui::ui
 		}
 
 		return nullptr;
+	}
+
+	Widget* Widget::get_parent()
+	{
+		return reinterpret_cast<Widget*>(this->_parent);
 	}
 
 	Vec2 Widget::get_pos()
@@ -255,13 +264,19 @@ namespace modui::ui
 	Widget* Widget::on_slide(ButtonInputCallback callback) { return this; }
 
 	Widget* Widget::set_text(const std::string& text) { return this; }
+	Widget* Widget::set_supporting_text(const std::string& supporting_text) { return this; }
+	Widget* Widget::set_trailing_text(const std::string& trailing_text) { return this; }
 	Widget* Widget::set_font_size(float font_size) { return this; }
 
 	Widget* Widget::set_icon(ImageID icon) { return this; }
+	Widget* Widget::set_leading_icon(ImageID leading_icon) { return this; }
 	Widget* Widget::set_icon_size(float icon_size) { return this; }
+
+	Widget* Widget::set_trailing_widget(Widget* trailing_widget) { return this; }
 
 	Widget* Widget::set_value(float value) { return this; }
 	Widget* Widget::set_state(bool state) { return this; }
+	Widget* Widget::set_toggleable(bool toggleable) { return this; }
 
 	Widget* Widget::set_padding(Vec2 padding) { this->_padding = Vec4(padding.y, padding.x, padding.y, padding.x); return this; }
 	Widget* Widget::set_padding(Vec4 padding) { this->_padding = padding; return this; }
