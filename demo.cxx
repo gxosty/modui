@@ -138,15 +138,7 @@ public:
 										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
 										->set_spacing(DP(5))
 										->add(
-											ui::IconButton::init(modui::icons::rocket_launch_outline),
-
-											ui::Text::init("Dark Theme")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-
-											ui::Widget::init()
-												->set_size_x(MODUI_SIZE_WIDTH_FULL),
-
-											ui::Switch::init()
+											ui::ListItem::init("Dark Theme", "", "", modui::icons::rocket_launch_outline, ui::Switch::init())
 												->on_release(MODUI_CALLBACK(this) {
 													if (this->dark_theme)
 													{
@@ -204,7 +196,10 @@ public:
 											ui::FilledIconButton::init(selectable_favorite)
 												->set_state(false),
 											ui::FilledIconButton::init(selectable_favorite)
-												->set_state(true)
+												->set_state(true),
+											ui::FilledIconButton::init(selectable_favorite)
+												->set_state(false)
+												->set_toggleable(true)
 										),
 
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
@@ -217,7 +212,10 @@ public:
 											ui::FilledTonalIconButton::init(selectable_favorite)
 												->set_state(false),
 											ui::FilledTonalIconButton::init(selectable_favorite)
-												->set_state(true)
+												->set_state(true),
+											ui::FilledTonalIconButton::init(selectable_favorite)
+												->set_state(false)
+												->set_toggleable(true)
 										),
 
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
@@ -230,7 +228,10 @@ public:
 											ui::OutlinedIconButton::init(selectable_favorite)
 												->set_state(false),
 											ui::OutlinedIconButton::init(selectable_favorite)
-												->set_state(true)
+												->set_state(true),
+											ui::OutlinedIconButton::init(selectable_favorite)
+												->set_state(false)
+												->set_toggleable(true)
 										),
 
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
@@ -243,14 +244,27 @@ public:
 											ui::IconButton::init(selectable_favorite)
 												->set_state(false),
 											ui::IconButton::init(selectable_favorite)
-												->set_state(true)
+												->set_state(true),
+											ui::IconButton::init(selectable_favorite)
+												->set_state(false)
+												->set_toggleable(true)
 										),
 
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
 										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
 										->add(
-											ui::ListItem::init("Headline", "Supporting text", "", modui::icons::favorite_outline),
-											ui::ListItem::init("Headline", "Supporting text", "", modui::icons::favorite_outline)
+											ui::ListItem::init("One Line ListItem"),
+											ui::ListItem::init("Two Line ListItem", "Example supporting text"),
+											ui::ListItem::init("Three Line ListItem", "Example supporting text that is long enough to fill the third line", "+999", nullptr, nullptr, ui::ListItem::Type::THREE_LINED),
+											ui::ListItem::init("ListItem with trailing text", "Example supporting text", "+999"),
+											ui::ListItem::init("ListItem with control widget", "Example supporting text", "", nullptr,
+												ui::Checkbox::init(true)
+											),
+											ui::ListItem::init("ListItem with leading icon", "Example supporting text", "", modui::icons::settings_outline),
+											ui::ListItem::init("ListItem Full", "Example supporting text that is long enough to fill the third line", "", modui::icons::favorite_outline,
+												ui::Switch::init(true),
+												ui::ListItem::Type::THREE_LINED
+											)
 										),
 
 									ui::FilledCard::init(modui::LAYOUT_ORIENTATION_VERTICAL)
@@ -339,7 +353,7 @@ int main()
 	// - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
 	//io.Fonts->AddFontDefault();
 	// io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 18.0f);
-	io.Fonts->AddFontFromFileTTF("../DroidSans.ttf", 16.0f);
+	io.Fonts->AddFontFromFileTTF("../DroidSans.ttf", 14.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
 	//io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);

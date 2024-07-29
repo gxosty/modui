@@ -36,6 +36,7 @@ namespace modui::ui
 		Widget* set_size_x(float x);
 		Widget* set_size_y(float y);
 		Vec2 get_size();
+		Vec2 get_calculated_size();
 
 		Theme& get_theme();
 
@@ -76,6 +77,7 @@ namespace modui::ui
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_value(float value);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_state(bool state);
+		MODUI_VIRTUAL_PLACEHOLDER   bool    get_state();
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_toggleable(bool toggleable);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_padding(Vec2 padding);

@@ -1,5 +1,6 @@
 #include <modui/app.hpp>
-#include <modui/ui/button/button.hpp>
+#include <modui/core/image/image.hpp>
+#include <modui/ui/iconbutton.hpp>
 #include "internal/internal_core.hpp"
 #include "internal/internal_utils.hpp"
 
@@ -10,6 +11,11 @@
 
 namespace modui
 {
+	namespace icons
+	{
+		char close_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>)=""\x00";
+		ImageID close = modui::image::Image::load_from_memory(close_bfr, -1, modui::image::ImageType::ICON);
+	}
 	App::App() :
 		_fullscreen{false},
 		_root_widget{nullptr},
@@ -100,8 +106,9 @@ namespace modui
 		modui::internal::__set_current_app(this);
 		this->_root_widget = this->build()->build_widget();
 		this->_root_widget->pre_render();
-		this->_window_close_button = ui::Button::init()
-			->set_size(Vec2(utils::dp(20), utils::dp(20)))
+		const float close_button_size = utils::dp(30);
+		this->_window_close_button = ui::IconButton::init(modui::icons::close)
+			->set_size(Vec2(close_button_size, close_button_size))
 			->on_release(MODUI_CALLBACK(this) {
 				this->_window_open = false;
 			});
@@ -153,7 +160,7 @@ namespace modui
 		ImGui::PushStyleColor(ImGuiCol_ResizeGripActive, theme().secondary);
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, this->_fullscreen ? 0.0f : utils::dp(15));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, this->_fullscreen ? 0.0f : utils::dp(10));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 0.0f);
@@ -242,15 +249,21 @@ namespace modui
 	{
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 
-		Vec2 cursor_pos = ImGui::GetCursorScreenPos();
-		Vec2 title_pos = Vec2(cursor_pos.x + utils::dp(15), cursor_pos.y + utils::dp(5));
-		draw_list->AddText(ImGui::GetFont(), utils::dp(20), title_pos, this->get_current_theme()().on_surface, this->_window_title.c_str(), nullptr);
+		const Vec2 cursor_pos = ImGui::GetCursorScreenPos();
 
-		Vec2 close_button_pos = Vec2(cursor_pos.x + ImGui::GetContentRegionAvail().x - utils::dp(25), cursor_pos.y + utils::dp(5));
-		this->_window_close_button->calculate_size(Vec2(utils::dp(20), utils::dp(20)));
-		this->_window_close_button->render(close_button_pos, Vec2(utils::dp(20), utils::dp(20)));
+		const float font_size = ImGui::GetFontSize();
+		const float padding = utils::dp(10);
+		const float close_button_size = utils::dp(30);
+		const float title_height = fmax(font_size * 2.0f, close_button_size);
 
-		ImGui::SetCursorScreenPos(Vec2(cursor_pos.x, cursor_pos.y + utils::dp(25)));
+		Vec2 title_pos = Vec2(cursor_pos.x + padding, cursor_pos.y + (title_height - font_size) / 2.0f);
+		Vec2 close_button_pos = Vec2(cursor_pos.x + ImGui::GetContentRegionAvail().x - close_button_size - padding, cursor_pos.y + (title_height - close_button_size) / 2.0f);
+
+		draw_list->AddText(ImGui::GetFont(), font_size, title_pos, this->get_current_theme()().primary, this->_window_title.c_str(), nullptr);
+		this->_window_close_button->calculate_size(Vec2(close_button_size, close_button_size));
+		this->_window_close_button->render(close_button_pos, {0.0f, 0.0f});
+
+		ImGui::SetCursorScreenPos(Vec2(cursor_pos.x, cursor_pos.y + title_height));
 	}
 
 	void App::_drain_queued_callbacks()

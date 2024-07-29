@@ -5,6 +5,8 @@ import os
 DECLARATION_FILE = "icons.hpp"
 IMPLEMENTATION_FILE = "icons.cxx"
 
+IMPLEMENTATION_EXCLUDES = ["close"]
+
 
 class IconData:
 	icon_name: str
@@ -83,7 +85,7 @@ namespace modui::icons
 }}
 """.format(
 		DECLARATION_FILE,
-		"\n\n\t".join(icon.get_implementation() for icon in icons)
+		"\n\n\t".join(icon.get_implementation() for icon in icons if icon.icon_name not in IMPLEMENTATION_EXCLUDES)
 	)
 
 	with open(os.path.join(output_dir, DECLARATION_FILE), "w") as file:

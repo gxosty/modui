@@ -1,22 +1,22 @@
 #pragma once
 
-#include "button/button.hpp"
-#include "button/iconbutton.hpp"
+#include "button.hpp"
+#include "iconbutton.hpp"
 
-#include "card/card.hpp"
+#include "card.hpp"
 
-#include "checkbox/checkbox.hpp"
+#include "checkbox.hpp"
 
-#include "layout/linearlayout.hpp"
-#include "layout/scrolllayout.hpp"
+#include "linearlayout.hpp"
+#include "scrolllayout.hpp"
 
-#include "list/listitem.hpp"
+#include "listitem.hpp"
 
-#include "screen/screen.hpp"
-#include "screen/screenmanager.hpp"
+#include "screen.hpp"
+#include "screenmanager.hpp"
 
-#include "slider/slider.hpp"
+#include "slider.hpp"
 
-#include "switch/switch.hpp"
+#include "switch.hpp"
 
-#include "text/text.hpp"
+#include "text.hpp"

@@ -119,6 +119,11 @@ namespace modui::ui
 		return this->_size;
 	}
 
+	Vec2 Widget::get_calculated_size()
+	{
+		return this->_calculated_size;
+	}
+
 	Theme& Widget::get_theme()
 	{
 		return **this->_theme;
@@ -276,6 +281,7 @@ namespace modui::ui
 
 	Widget* Widget::set_value(float value) { return this; }
 	Widget* Widget::set_state(bool state) { return this; }
+	bool    Widget::get_state() { return false; }
 	Widget* Widget::set_toggleable(bool toggleable) { return this; }
 
 	Widget* Widget::set_padding(Vec2 padding) { this->_padding = Vec4(padding.y, padding.x, padding.y, padding.x); return this; }
@@ -287,11 +293,11 @@ namespace modui::ui
 	Widget* Widget::set_padding_right(float padding) { this->_padding.y = padding; return this; }
 	Widget* Widget::set_padding_bottom(float padding) { this->_padding.z = padding; return this; }
 	Widget* Widget::set_padding_left(float padding) { this->_padding.w = padding; return this; }
-	Vec4 Widget::get_padding() { return this->_padding; }
+	Vec4    Widget::get_padding() { return this->_padding; }
 	Widget* Widget::set_spacing(Vec2 spacing) { this->_spacing = spacing; return this; }
 	Widget* Widget::set_spacing(float x, float y) { this->_spacing = Vec2(x, y); return this; }
 	Widget* Widget::set_spacing(float spacing) { this->_spacing = Vec2(spacing, spacing); return this; }
-	Vec2 Widget::get_spacing() { return this->_spacing; }
+	Vec2    Widget::get_spacing() { return this->_spacing; }
 
 	Widget* Widget::set_name(const std::string& name) { return this; }
 	Widget* Widget::set_screen(const std::string& screen_name) { return this; }

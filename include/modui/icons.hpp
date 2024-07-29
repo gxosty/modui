@@ -5,6 +5,7 @@
 namespace modui::icons
 {
 #ifdef MODUI_EMBED_ICONS
+	extern ImageID close;
 	extern ImageID favorite_outline;
 	extern ImageID favorite;
 	extern ImageID rocket_launch_outline;
