@@ -29,7 +29,7 @@ class IconData:
 		if icon_name[0].isdigit():
 			icon_name = "_" + icon_name;
 
-		return icon_name
+		return "ic_" + icon_name
 
 	def __repr__(self):
 		return self.__str__()

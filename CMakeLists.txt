@@ -35,28 +35,20 @@ set(MODUI_SRC
 	include/modui/internal/internal_utils.cxx
 
 	include/modui/ui/basebutton.cxx
+	include/modui/ui/baseslider.cxx
 	include/modui/ui/button.cxx
-	include/modui/ui/iconbutton.cxx
-
 	include/modui/ui/card.cxx
-
 	include/modui/ui/checkbox.cxx
-
+	include/modui/ui/divider.cxx
+	include/modui/ui/iconbutton.cxx
 	include/modui/ui/linearlayout.cxx
-	include/modui/ui/scrolllayout.cxx
-
 	include/modui/ui/listitem.cxx
-
 	include/modui/ui/screen.cxx
 	include/modui/ui/screenmanager.cxx
-
-	include/modui/ui/baseslider.cxx
+	include/modui/ui/scrolllayout.cxx
 	include/modui/ui/slider.cxx
-
 	include/modui/ui/switch.cxx
-
 	include/modui/ui/text.cxx
-
 	include/modui/ui/widget.cxx
 
 	include/modui/icons.cxx

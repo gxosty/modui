@@ -118,8 +118,8 @@ public:
 		// this->set_current_theme(DEFAULT_THEME_DARK);
 
 		ImageID selectable_favorite = modui::image::Image::make_selectable(
-			modui::icons::favorite_outline,
-			modui::icons::favorite
+			modui::icons::ic_favorite_outline,
+			modui::icons::ic_favorite
 		);
 
 		return
@@ -138,7 +138,7 @@ public:
 										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
 										->set_spacing(DP(5))
 										->add(
-											ui::ListItem::init("Dark Theme", "", "", modui::icons::rocket_launch_outline, ui::Switch::init())
+											ui::ListItem::init("Dark Theme", "", "", modui::icons::ic_dark_mode, ui::Switch::init())
 												->on_release(MODUI_CALLBACK(this) {
 													if (this->dark_theme)
 													{
@@ -260,8 +260,8 @@ public:
 											ui::ListItem::init("ListItem with control widget", "Example supporting text", "", nullptr,
 												ui::Checkbox::init(true)
 											),
-											ui::ListItem::init("ListItem with leading icon", "Example supporting text", "", modui::icons::settings_outline),
-											ui::ListItem::init("ListItem Full", "Example supporting text that is long enough to fill the third line", "", modui::icons::favorite_outline,
+											ui::ListItem::init("ListItem with leading icon", "Example supporting text", "", modui::icons::ic_settings_outline),
+											ui::ListItem::init("ListItem Full", "Example supporting text that is long enough to fill the third line", "", modui::icons::ic_favorite_outline,
 												ui::Switch::init(true),
 												ui::ListItem::Type::THREE_LINED
 											)

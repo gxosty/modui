@@ -51,7 +51,7 @@ namespace modui::ui
 
 	Vec2 Button::render(Vec2 pos, Vec2 reserved_space)
 	{
-		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
 		Vec2 size = this->_calculated_size;
