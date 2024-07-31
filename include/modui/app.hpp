@@ -25,6 +25,8 @@ namespace modui
 		App* set_window_size(Vec2 window_size);
 		App* set_window_fullscreen(bool fullscreen);
 		App* set_window_open(bool open);
+		App* set_window_closable(bool closable);
+		App* set_window_collapsable(bool collapsable);
 
 		ThemeManager& get_theme_manager();
 		Theme& get_current_theme();
@@ -46,8 +48,11 @@ namespace modui
 		ui::Widget* _root_widget;
 		bool _fullscreen;
 		std::string _window_title;
+		Vec2 _window_pos;
 		Vec2 _window_size; // only when not fullscreen
 		bool _window_open;
+		bool _window_closable;
+		bool _window_collapsable;
 		ThemeManager _theme_manager;
 		Theme* _current_theme;
 		bool _prerendered;
@@ -60,6 +65,7 @@ namespace modui
 		ImDrawListSplitter _draw_list_splitter;
 
 		ui::Widget* _window_close_button;
+		ui::Widget* _window_collapse_button;
 		void _render_window_title();
 		void _drain_queued_callbacks();
 	};

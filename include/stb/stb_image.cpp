@@ -16,13 +16,15 @@
 #include <stdarg.h>
 
 
-// #ifndef _MSC_VER
-// #ifdef __cplusplus
-// #define __forceinline inline
-// #else
-// #define __forceinline
-// #endif
-// #endif
+#ifndef _MSC_VER
+#ifndef __forceinline 
+#ifdef __cplusplus
+#define __forceinline inline
+#else
+#define __forceinline
+#endif
+#endif
+#endif
 
 
 // implementation:

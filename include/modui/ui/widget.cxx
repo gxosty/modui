@@ -12,7 +12,8 @@ namespace modui::ui
 		_size{MODUI_SIZE_WIDTH_FULL, MODUI_SIZE_HEIGHT_FULL},
 		_padding{0.0f, 0.0f, 0.0f, 0.0f},
 		_spacing{0.0f, 0.0f},
-		_root_widget{nullptr}
+		_root_widget{nullptr},
+		_built{false}
 		{
 			modui::App* app = modui::get_current_app();
 			this->_theme = &app->_current_theme;
@@ -161,8 +162,12 @@ namespace modui::ui
 
 	Widget* Widget::build_widget()
 	{
+		if (this->_built) return this;
+
 		this->on_create_widget();
 		this->_set_root_widget(nullptr);
+
+		this->_built = true;
 
 		return this;
 	}

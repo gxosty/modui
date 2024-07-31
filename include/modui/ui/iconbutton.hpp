@@ -18,7 +18,7 @@ namespace modui::ui
 		IconButton* set_toggleable(bool toggleable) override;
 
 		const ImageID get_icon();
-		bool get_state();
+		bool get_state() override;
 
 		IconButton* on_release(ButtonInputCallback callback) override;
 

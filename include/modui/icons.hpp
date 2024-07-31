@@ -30,6 +30,7 @@ namespace modui::icons
 	extern ImageID ic_check_circle;
 	extern ImageID ic_check;
 	extern ImageID ic_close;
+	extern ImageID ic_collapse_content;
 	extern ImageID ic_dark_mode_outline;
 	extern ImageID ic_dark_mode;
 	extern ImageID ic_delete_outline;
@@ -37,6 +38,7 @@ namespace modui::icons
 	extern ImageID ic_download;
 	extern ImageID ic_expand_circle_down_outline;
 	extern ImageID ic_expand_circle_down;
+	extern ImageID ic_expand_content;
 	extern ImageID ic_favorite_outline;
 	extern ImageID ic_favorite;
 	extern ImageID ic_home_outline;

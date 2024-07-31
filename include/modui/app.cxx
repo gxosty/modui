@@ -13,16 +13,32 @@ namespace modui
 {
 	namespace icons
 	{
-		char close_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>)=""\x00";
-		ImageID close = modui::image::Image::load_from_memory(close_bfr, -1, modui::image::ImageType::ICON);
+		char ic_close_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>)=""\x00";
+		ImageID ic_close = modui::image::Image::load_from_memory(ic_close_bfr, -1, modui::image::ImageType::ICON);
+
+		char ic_collapse_content_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M440-440v240h-80v-160H200v-80h240Zm160-320v160h160v80H520v-240h80Z"/></svg>)=""\x00";
+		ImageID ic_collapse_content = modui::image::Image::load_from_memory(ic_collapse_content_bfr, -1, modui::image::ImageType::ICON);
+
+		char ic_expand_content_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M200-200v-240h80v160h160v80H200Zm480-320v-160H520v-80h240v240h-80Z"/></svg>)=""\x00";
+		ImageID ic_expand_content = modui::image::Image::load_from_memory(ic_expand_content_bfr, -1, modui::image::ImageType::ICON);
+
+		static ImageID selectable_collapse = modui::image::Image::make_selectable(
+			ic_collapse_content,
+			ic_expand_content
+		);
 	}
+
 	App::App() :
 		_fullscreen{false},
 		_root_widget{nullptr},
 		_window_title{"Window " + std::to_string(modui::internal::__get_next_id_for_widget())},
+		_window_pos{utils::dp(50), utils::dp(50)},
+		_window_size{utils::dp(150), utils::dp(150)},
 		_prerendered{false},
 		_rendering{false},
-		_window_open{true}
+		_window_open{true},
+		_window_closable{true},
+		_window_collapsable{false}
 	{
 		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_LIGHT)));
 		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_DARK)));
@@ -99,6 +115,20 @@ namespace modui
 		return this;
 	}
 
+	App* App::set_window_closable(bool closable)
+	{
+		this->_window_closable = closable;
+
+		return this;
+	}
+
+	App* App::set_window_collapsable(bool collapsable)
+	{
+		this->_window_collapsable = collapsable;
+
+		return this;
+	}
+
 	void App::pre_render()
 	{
 		if (this->_prerendered) return;
@@ -107,12 +137,35 @@ namespace modui
 		this->_root_widget = this->build()->build_widget();
 		this->_root_widget->pre_render();
 		const float close_button_size = utils::dp(30);
-		this->_window_close_button = ui::IconButton::init(modui::icons::close)
+		this->_window_close_button = ui::IconButton::init(modui::icons::ic_close)
 			->set_size(Vec2(close_button_size, close_button_size))
 			->on_release(MODUI_CALLBACK(this) {
 				this->_window_open = false;
 			});
 		this->_window_close_button->pre_render();
+		this->_window_collapse_button = ui::IconButton::init(modui::icons::selectable_collapse)
+			->set_size(ImVec2(close_button_size, close_button_size))
+			->set_state(false)
+			->set_toggleable(true)
+			->on_release(MODUI_CALLBACK(this) {
+				bool state = this_widget->get_state();
+
+				const int buttons = \
+					(this->_window_closable ? 1 : 0) +
+					(this->_window_collapsable ? 1 : 0);
+
+				const float width = ImGui::CalcTextSize(this->_window_title.c_str()).x + utils::dp(10) * (buttons > 0 ? 3.0f : 2.0f) + utils::dp(30) * buttons + utils::dp(5) * fmax(buttons - 1, 0);
+
+				if (state)
+				{
+					this->_window->Pos.x = this->_window_pos.x + this->_window_size.x - width;
+				}
+				else
+				{
+					this->_window->Pos.x -= this->_window_size.x - width;
+				}
+			});
+		this->_window_collapse_button->pre_render();
 		modui::internal::__set_current_app(nullptr);
 
 		bool opened = false;
@@ -137,18 +190,38 @@ namespace modui
 			| ImGuiWindowFlags_NoScrollWithMouse
 			| ImGuiWindowFlags_NoTitleBar;
 
-		int pop_style_var_count = 9;
+		int pop_style_var_count = 10;
 		int pop_style_col_count = 5;
+
+		bool collapsed = this->_window_collapse_button->get_state();
 
 		if (this->_fullscreen)
 		{
-			window_flags =
-				  ImGuiWindowFlags_NoTitleBar
-				| ImGuiWindowFlags_NoResize
+			window_flags |=
+				  ImGuiWindowFlags_NoResize
 				| ImGuiWindowFlags_NoMove;
 
-			ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
+			this->_window_pos = ImVec2(0.0f, 0.0f);
+			ImGui::SetNextWindowPos(this->_window_pos);
 			ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
+		}
+		else if (collapsed)
+		{
+			window_flags |= ImGuiWindowFlags_NoResize;
+
+			const float title_height = fmax(ImGui::GetFontSize() * 2.0f, utils::dp(30));
+			const int buttons = \
+				(this->_window_closable ? 1 : 0) +
+				(this->_window_collapsable ? 1 : 0);
+
+			ImGui::SetNextWindowSize(ImVec2(
+				ImGui::CalcTextSize(this->_window_title.c_str()).x + utils::dp(10) * (buttons > 0 ? 3.0f : 2.0f) + utils::dp(30) * buttons + utils::dp(5) * fmax(buttons - 1, 0),
+				title_height
+			));
+		}
+		else
+		{
+			ImGui::SetNextWindowSize(this->_window_size);
 		}
 
 		Theme& theme = this->get_current_theme();
@@ -159,6 +232,7 @@ namespace modui
 		ImGui::PushStyleColor(ImGuiCol_ResizeGripHovered, 0);
 		ImGui::PushStyleColor(ImGuiCol_ResizeGripActive, theme().secondary);
 
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0.0f, 0.0f));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, this->_fullscreen ? 0.0f : utils::dp(10));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -178,29 +252,39 @@ namespace modui
 			return;
 		}
 
-
 		if (!ImGui::IsWindowCollapsed())
 		{
-
 			this->_rendering = true;
 			modui::internal::__set_current_app(this);
 
 			if (!this->_fullscreen) _render_window_title();
-			Vec2 cursor_pos = ImGui::GetCursorScreenPos();
-			Vec2 avail_size = ImGui::GetContentRegionAvail();
 
-			this->_root_widget->calculate_size(avail_size);
-			this->_root_widget->render(cursor_pos, avail_size);
+			if (!collapsed)
+			{	
+				Vec2 cursor_pos = ImGui::GetCursorScreenPos();
+				Vec2 avail_size = ImGui::GetContentRegionAvail();
+
+				this->_root_widget->calculate_size(avail_size);
+				this->_root_widget->render(cursor_pos, avail_size);
+			}
+
 			this->_drain_queued_callbacks();
-
 			modui::internal::__set_current_app(nullptr);
 			this->_rendering = false;
 		}
 
+		this->_window->ScrollMax.y = 0;
 		ImGui::End();
 
 		ImGui::PopStyleVar(pop_style_var_count);
 		ImGui::PopStyleColor(pop_style_col_count);
+
+		if (!collapsed)
+		{
+			this->_window_size = this->_window->Size;
+		}
+
+		this->_window_pos = this->_window->Pos;
 	}
 
 	void App::post_render()
@@ -253,17 +337,30 @@ namespace modui
 
 		const float font_size = ImGui::GetFontSize();
 		const float padding = utils::dp(10);
-		const float close_button_size = utils::dp(30);
-		const float title_height = fmax(font_size * 2.0f, close_button_size);
+		const float button_size = utils::dp(30);
+		const float title_height = fmax(font_size * 2.0f, button_size);
 
 		Vec2 title_pos = Vec2(cursor_pos.x + padding, cursor_pos.y + (title_height - font_size) / 2.0f);
-		Vec2 close_button_pos = Vec2(cursor_pos.x + ImGui::GetContentRegionAvail().x - close_button_size - padding, cursor_pos.y + (title_height - close_button_size) / 2.0f);
+		Vec2 button_pos = Vec2(cursor_pos.x + ImGui::GetContentRegionAvail().x - button_size - padding, cursor_pos.y + (title_height - button_size) / 2.0f);
 
 		draw_list->AddText(ImGui::GetFont(), font_size, title_pos, this->get_current_theme()().primary, this->_window_title.c_str(), nullptr);
-		this->_window_close_button->calculate_size(Vec2(close_button_size, close_button_size));
-		this->_window_close_button->render(close_button_pos, {0.0f, 0.0f});
 
-		ImGui::SetCursorScreenPos(Vec2(cursor_pos.x, cursor_pos.y + title_height));
+		if (this->_window_closable)
+		{
+			this->_window_close_button->calculate_size(Vec2(button_size, button_size));
+			this->_window_close_button->render(button_pos, {0.0f, 0.0f});
+
+			button_pos.x -= utils::dp(5) + button_size;
+		}
+
+		if (this->_window_collapsable)
+		{
+			this->_window_collapse_button->calculate_size(Vec2(button_size, button_size));
+			this->_window_collapse_button->render(button_pos, {0.0f, 0.0f});
+		}
+
+		if (!this->_window_collapse_button->get_state())
+			ImGui::SetCursorScreenPos(Vec2(cursor_pos.x, cursor_pos.y + title_height));
 	}
 
 	void App::_drain_queued_callbacks()

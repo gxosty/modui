@@ -27,6 +27,8 @@ public:
 	MyApp() : modui::App("MyApp")
 	{
 		this->set_window_size(Vec2(480, 480));
+		// this->set_window_closable(false);
+		this->set_window_collapsable(true);
 		// this->set_window_fullscreen(true);
 
 		modui::Theme theme_light("theme_light");
@@ -114,8 +116,6 @@ public:
 	virtual ui::Widget* build() override
 	{
 		this->screen_manager = ui::ScreenManager::init();
-
-		// this->set_current_theme(DEFAULT_THEME_DARK);
 
 		ImageID selectable_favorite = modui::image::Image::make_selectable(
 			modui::icons::ic_favorite_outline,

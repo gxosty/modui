@@ -126,6 +126,7 @@ namespace modui::ui
 	private:
 		static int _on_card;
 		Widget* _root_widget;
+		bool _built;
 
 		void _set_parent(core::BaseWidget* bwidget);
 		virtual void on_create_widget();

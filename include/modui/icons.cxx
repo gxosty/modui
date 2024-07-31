@@ -75,9 +75,6 @@ namespace modui::icons
 	char ic_check_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>)=""\x00";
 	ImageID ic_check = modui::image::Image::load_from_memory(ic_check_bfr, -1, modui::image::ImageType::ICON);
 
-	char ic_close_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>)=""\x00";
-	ImageID ic_close = modui::image::Image::load_from_memory(ic_close_bfr, -1, modui::image::ImageType::ICON);
-
 	char ic_dark_mode_outline_bfr[] = R"=(<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"/></svg>)=""\x00";
 	ImageID ic_dark_mode_outline = modui::image::Image::load_from_memory(ic_dark_mode_outline_bfr, -1, modui::image::ImageType::ICON);
 

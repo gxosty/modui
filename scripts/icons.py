@@ -5,7 +5,7 @@ import os
 DECLARATION_FILE = "icons.hpp"
 IMPLEMENTATION_FILE = "icons.cxx"
 
-IMPLEMENTATION_EXCLUDES = ["close"]
+IMPLEMENTATION_EXCLUDES = ["ic_close", "ic_collapse_content", "ic_expand_content"]
 
 
 class IconData:
