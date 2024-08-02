@@ -10,6 +10,7 @@ namespace modui::ui
 		_min_value{min_value},
 		_max_value{max_value}
 	{
+		this->_clickable = true;
 		this->_value = min_value;
 	}
 

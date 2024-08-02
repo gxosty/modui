@@ -43,6 +43,7 @@ set(MODUI_SRC
 	include/modui/ui/iconbutton.cxx
 	include/modui/ui/linearlayout.cxx
 	include/modui/ui/listitem.cxx
+	include/modui/ui/memorytext.cxx
 	include/modui/ui/screen.cxx
 	include/modui/ui/screenmanager.cxx
 	include/modui/ui/scrolllayout.cxx

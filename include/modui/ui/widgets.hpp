@@ -9,6 +9,7 @@
 #include "iconbutton.hpp"
 #include "linearlayout.hpp"
 #include "listitem.hpp"
+#include "memorytext.hpp"
 #include "screen.hpp"
 #include "screenmanager.hpp"
 #include "scrolllayout.hpp"

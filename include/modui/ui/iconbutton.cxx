@@ -53,6 +53,8 @@ namespace modui::ui
 
 	Vec2 IconButton::render(Vec2 pos, Vec2 reserved_space)
 	{
+		const Vec2 __button_size = Vec2(utils::dp(40), utils::dp(40));
+
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
@@ -80,10 +82,11 @@ namespace modui::ui
 		}
 
 		Col32 ripple_color = (col1 & 0xFFFFFF) | (unsigned(0xFF * this->_press_factor * 0.1f) << 24);
+		Vec2 ripple_pos = pos + (size - __button_size) / 2.0f;
 
 		draw_list->AddRectFilled(
-			pos,
-			pos + size,
+			ripple_pos,
+			ripple_pos + __button_size,
 			ripple_color,
 			this->_rounding
 		);
@@ -159,6 +162,8 @@ namespace modui::ui
 
 	Vec2 FilledIconButton::render(Vec2 pos, Vec2 reserved_space)
 	{
+		const Vec2 __button_size = Vec2(utils::dp(40), utils::dp(40));
+
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
@@ -189,17 +194,18 @@ namespace modui::ui
 
 		Col32 fill_color = col1;
 		Col32 ripple_color = (col2 & 0xFFFFFF) | (unsigned(0xFF * this->_press_factor * 0.1f) << 24);
+		Vec2 ripple_pos = pos + (size - __button_size) / 2.0f;
 
 		draw_list->AddRectFilled(
-			pos,
-			pos + size,
+			ripple_pos,
+			ripple_pos + __button_size,
 			fill_color,
 			this->_rounding
 		);
 
 		draw_list->AddRectFilled(
-			pos,
-			pos + size,
+			ripple_pos,
+			ripple_pos + __button_size,
 			ripple_color,
 			this->_rounding
 		);
@@ -229,6 +235,8 @@ namespace modui::ui
 
 	Vec2 FilledTonalIconButton::render(Vec2 pos, Vec2 reserved_space)
 	{
+		const Vec2 __button_size = Vec2(utils::dp(40), utils::dp(40));
+
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
@@ -259,17 +267,18 @@ namespace modui::ui
 
 		Col32 fill_color = col1;
 		Col32 ripple_color = (col2 & 0xFFFFFF) | (unsigned(0xFF * this->_press_factor * 0.1f) << 24);
+		Vec2 ripple_pos = pos + (size - __button_size) / 2.0f;
 
 		draw_list->AddRectFilled(
-			pos,
-			pos + size,
+			ripple_pos,
+			ripple_pos + __button_size,
 			fill_color,
 			this->_rounding
 		);
 
 		draw_list->AddRectFilled(
-			pos,
-			pos + size,
+			ripple_pos,
+			ripple_pos + __button_size,
 			ripple_color,
 			this->_rounding
 		);
@@ -299,6 +308,8 @@ namespace modui::ui
 
 	Vec2 OutlinedIconButton::render(Vec2 pos, Vec2 reserved_space)
 	{
+		const Vec2 __button_size = Vec2(utils::dp(40), utils::dp(40));
+
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
@@ -333,17 +344,18 @@ namespace modui::ui
 		Col32 fill_color = col1;
 		Col32 ripple_color = (col2 & 0xFFFFFF) | (unsigned(0xFF * this->_press_factor * 0.1f) << 24);
 		Col32 outline_color = col3;
+		Vec2 ripple_pos = pos + (size - __button_size) / 2.0f;
 
 		draw_list->AddRectFilled(
-			pos,
-			pos + size,
+			ripple_pos,
+			ripple_pos + __button_size,
 			fill_color,
 			this->_rounding
 		);
 
 		draw_list->AddRect(
-			pos,
-			pos + size,
+			ripple_pos,
+			ripple_pos + __button_size,
 			outline_color,
 			this->_rounding,
 			utils::dp(1)

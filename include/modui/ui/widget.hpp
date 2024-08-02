@@ -38,6 +38,9 @@ namespace modui::ui
 		Vec2 get_size();
 		Vec2 get_calculated_size();
 
+		Widget* set_clickable(bool clickable);
+		bool is_clickable();
+
 		Theme& get_theme();
 
 		Widget* build_widget();
@@ -65,6 +68,7 @@ namespace modui::ui
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* on_slide(ButtonInputCallback callback);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_text(const std::string& text);
+		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_text(const char* text);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_supporting_text(const std::string& supporting_text);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_trailing_text(const std::string& trailing_text);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_font_size(float font_size);
@@ -113,6 +117,7 @@ namespace modui::ui
 		Vec2 _calculated_size;
 		Vec4 _padding;
 		Vec2 _spacing;
+		bool _clickable;
 
 		Theme** _theme;
 		std::vector<Widget*> _children;

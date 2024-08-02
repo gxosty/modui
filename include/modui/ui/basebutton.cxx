@@ -8,7 +8,10 @@ namespace modui::ui
 		_on_hold_callback{MODUI_EMPTY_CALLBACK},
 		_on_release_callback{MODUI_EMPTY_CALLBACK},
 		_is_pressed{false},
-		_is_released{false} {}
+		_is_released{false}
+	{
+		this->_clickable = true;
+	}
 
 	Widget* BaseButton::on_press(ButtonInputCallback callback)
 	{
@@ -52,7 +55,7 @@ namespace modui::ui
 		// draw_list->AddRect(pos, pos + reserved_space, 0xFF7F7F7F);
 
 		ImGui::SetCursorScreenPos(pos);
-		if (!ImGui::IsMouseDragging(0) || (ImGui::GetScrollMaxY() <= 0.0f))
+		if ((!ImGui::IsMouseDragging(0) || (ImGui::GetScrollMaxY() <= 0.0f)) && this->_clickable)
 		{
 			ImGui::PushID(this->_id);
 			this->_is_released = ImGui::InvisibleButton(DEFAULT_ID, reserved_space);

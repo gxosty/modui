@@ -13,7 +13,8 @@ namespace modui::ui
 		_padding{0.0f, 0.0f, 0.0f, 0.0f},
 		_spacing{0.0f, 0.0f},
 		_root_widget{nullptr},
-		_built{false}
+		_built{false},
+		_clickable{false}
 		{
 			modui::App* app = modui::get_current_app();
 			this->_theme = &app->_current_theme;
@@ -198,6 +199,18 @@ namespace modui::ui
 		return this->_calculated_size;
 	}
 
+	Widget* Widget::set_clickable(bool clickable)
+	{
+		this->_clickable = clickable;
+
+		return this;
+	}
+
+	bool Widget::is_clickable()
+	{
+		return this->_clickable;
+	}
+
 	float Widget::calculate_size_x(float reserved_space_x)
 	{
 		float x = this->_size.x;
@@ -273,6 +286,7 @@ namespace modui::ui
 	Widget* Widget::on_release(ButtonInputCallback callback) { return this; }
 	Widget* Widget::on_slide(ButtonInputCallback callback) { return this; }
 
+	Widget* Widget::set_text(const char* text) { return this; }
 	Widget* Widget::set_text(const std::string& text) { return this; }
 	Widget* Widget::set_supporting_text(const std::string& supporting_text) { return this; }
 	Widget* Widget::set_trailing_text(const std::string& trailing_text) { return this; }

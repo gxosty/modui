@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <cmath>
+#include <thread>
+#include <chrono>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
@@ -122,161 +124,205 @@ public:
 			modui::icons::ic_favorite
 		);
 
+		const char* some_text = "Hello, this is text!";
+
 		return
 		this->screen_manager->add(
 			ui::Screen::init("demo_screen1")
 				->add(
-					ui::ScrollLayout::init()
+					ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
 						->add(
-							ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
-								->set_padding(DP(10.0f))
-								->set_spacing(DP(10.0f))
-								->set_size_x(MODUI_SIZE_WIDTH_FULL)
-								->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+							// ui::Toolbar::init("Toolbar")
+							// 	->set_leading_icon(modui::icons::ic_arrow_left),
+
+							ui::ScrollLayout::init()
 								->add(
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
-										->set_spacing(DP(5))
-										->add(
-											ui::ListItem::init("Dark Theme", "", "", modui::icons::ic_dark_mode, ui::Switch::init())
-												->on_release(MODUI_CALLBACK(this) {
-													if (this->dark_theme)
-													{
-														this->set_current_theme("theme_light");
-													}
-													else
-													{
-														this->set_current_theme("theme_dark");
-													}
-
-													this->dark_theme = !this->dark_theme;
-												})
-										),
-
-									ui::Button::init("Button"),
-
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
-										->set_spacing(DP(10))
-										->add(
-											ui::Text::init("Checkbox: ")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-
-											ui::Checkbox::init(),
-											ui::Checkbox::init(true),
-											ui::Widget::init()
-												->set_size_x(MODUI_SIZE_WIDTH_FULL),
-
-											ui::Text::init("Switch: ")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-											
-											ui::Switch::init(),
-											ui::Switch::init(true),
-											ui::Widget::init()
-												->set_size_x(MODUI_SIZE_WIDTH_FULL)
-										),
-
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
-										->set_spacing(DP(10))
-										->add(
-											ui::Text::init("Slider: ")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-											
-											ui::Slider::init(0.0f, 100.0f)
-										),
-
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
-										->set_spacing(DP(10))
-										->add(
-											ui::Text::init("FilledIconButton: ")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-
-											ui::FilledIconButton::init(selectable_favorite)
-												->set_state(false),
-											ui::FilledIconButton::init(selectable_favorite)
-												->set_state(true),
-											ui::FilledIconButton::init(selectable_favorite)
-												->set_state(false)
-												->set_toggleable(true)
-										),
-
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
-										->set_spacing(DP(10))
-										->add(
-											ui::Text::init("FilledTonalIconButton: ")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-
-											ui::FilledTonalIconButton::init(selectable_favorite)
-												->set_state(false),
-											ui::FilledTonalIconButton::init(selectable_favorite)
-												->set_state(true),
-											ui::FilledTonalIconButton::init(selectable_favorite)
-												->set_state(false)
-												->set_toggleable(true)
-										),
-
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
-										->set_spacing(DP(10))
-										->add(
-											ui::Text::init("OutlinedIconButton: ")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-
-											ui::OutlinedIconButton::init(selectable_favorite)
-												->set_state(false),
-											ui::OutlinedIconButton::init(selectable_favorite)
-												->set_state(true),
-											ui::OutlinedIconButton::init(selectable_favorite)
-												->set_state(false)
-												->set_toggleable(true)
-										),
-
-									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
-										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
-										->set_spacing(DP(10))
-										->add(
-											ui::Text::init("IconButton: ")
-												->set_size_y(MODUI_SIZE_HEIGHT_FULL),
-
-											ui::IconButton::init(selectable_favorite)
-												->set_state(false),
-											ui::IconButton::init(selectable_favorite)
-												->set_state(true),
-											ui::IconButton::init(selectable_favorite)
-												->set_state(false)
-												->set_toggleable(true)
-										),
-
 									ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+										->set_padding(DP(10.0f))
+										->set_spacing(DP(10.0f))
+										->set_size_x(MODUI_SIZE_WIDTH_FULL)
 										->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
 										->add(
-											ui::ListItem::init("One Line ListItem"),
-											ui::ListItem::init("Two Line ListItem", "Example supporting text"),
-											ui::ListItem::init("Three Line ListItem", "Example supporting text that is long enough to fill the third line", "+999", nullptr, nullptr, ui::ListItem::Type::THREE_LINED),
-											ui::ListItem::init("ListItem with trailing text", "Example supporting text", "+999"),
-											ui::ListItem::init("ListItem with control widget", "Example supporting text", "", nullptr,
-												ui::Checkbox::init(true)
-											),
-											ui::ListItem::init("ListItem with leading icon", "Example supporting text", "", modui::icons::ic_settings_outline),
-											ui::ListItem::init("ListItem Full", "Example supporting text that is long enough to fill the third line", "", modui::icons::ic_favorite_outline,
-												ui::Switch::init(true),
-												ui::ListItem::Type::THREE_LINED
-											)
-										),
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(5))
+												->add(
+													ui::ListItem::init("Dark Theme", "", "", modui::icons::ic_dark_mode, ui::Switch::init())
+														->on_release(MODUI_CALLBACK(this) {
+															if (this->dark_theme)
+															{
+																this->set_current_theme("theme_light");
+															}
+															else
+															{
+																this->set_current_theme("theme_dark");
+															}
 
-									ui::FilledCard::init(modui::LAYOUT_ORIENTATION_VERTICAL)
-										->set_size_x(MODUI_SIZE_WIDTH_FULL)
-										->set_padding(DP(15))
-										->set_spacing(DP(15))
-										->add(
-											ui::TitleText::init("Card Title"),
+															this->dark_theme = !this->dark_theme;
+														})
+												),
 
-											ui::Text::init("Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator.")
+											ui::Button::init("Add Widget")
+												->on_release(MODUI_CALLBACK(this) {
+													this->run_in_ui_thread(+[]() {
+														MyApp* app = reinterpret_cast<MyApp*>(modui::get_current_app());
+														app->screen_manager->find_widget_by_id("ll")->add(
+															ui::Button::init("Button")
+																->on_release(MODUI_CALLBACK() {
+																	this_widget->get_parent()->remove(this_widget);
+																})
+														);
+													});
+												}),
+
+											ui::Button::init("Second screen")
+												->on_release(MODUI_CALLBACK(this) {
+													this->screen_manager->set_screen("demo_screen2");
+												}),
+
+											ui::MemoryText::init(nullptr),
+
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("Checkbox: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+
+													ui::Checkbox::init(),
+													ui::Checkbox::init(true),
+													ui::Widget::init()
+														->set_size_x(MODUI_SIZE_WIDTH_FULL),
+
+													ui::Text::init("Switch: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+													
+													ui::Switch::init(),
+													ui::Switch::init(true),
+													ui::Widget::init()
+														->set_size_x(MODUI_SIZE_WIDTH_FULL)
+												),
+
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("Slider: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+													
+													ui::Slider::init(0.0f, 100.0f)
+												),
+
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("FilledIconButton: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+
+													ui::FilledIconButton::init(selectable_favorite)
+														->set_state(false),
+													ui::FilledIconButton::init(selectable_favorite)
+														->set_state(true),
+													ui::FilledIconButton::init(selectable_favorite)
+														->set_state(false)
+														->set_toggleable(true)
+												),
+
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("FilledTonalIconButton: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+
+													ui::FilledTonalIconButton::init(selectable_favorite)
+														->set_state(false),
+													ui::FilledTonalIconButton::init(selectable_favorite)
+														->set_state(true),
+													ui::FilledTonalIconButton::init(selectable_favorite)
+														->set_state(false)
+														->set_toggleable(true)
+												),
+
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("OutlinedIconButton: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+
+													ui::OutlinedIconButton::init(selectable_favorite)
+														->set_state(false),
+													ui::OutlinedIconButton::init(selectable_favorite)
+														->set_state(true),
+													ui::OutlinedIconButton::init(selectable_favorite)
+														->set_state(false)
+														->set_toggleable(true)
+												),
+
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("IconButton: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+
+													ui::IconButton::init(selectable_favorite)
+														->set_state(false),
+													ui::IconButton::init(selectable_favorite)
+														->set_state(true),
+													ui::IconButton::init(selectable_favorite)
+														->set_state(false)
+														->set_toggleable(true)
+												),
+
+											ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+												->set_id("ll")
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->add(
+													ui::ListItem::init("One List Item (disabled)")
+														->set_clickable(false),
+													ui::ListItem::init("One Line ListItem"),
+													ui::ListItem::init("Two Line ListItem", "Example supporting text"),
+													ui::ListItem::init("Three Line ListItem", "Example supporting text that is long enough to fill the third line", "+999", nullptr, nullptr, ui::ListItem::Type::THREE_LINED),
+													ui::ListItem::init("ListItem with trailing text", "Example supporting text", "+999"),
+													ui::ListItem::init("ListItem with control widget", "Example supporting text", "", nullptr,
+														ui::Checkbox::init(true)
+													),
+													ui::ListItem::init("ListItem with leading icon", "Example supporting text", "", modui::icons::ic_settings_outline),
+													ui::ListItem::init("ListItem Full", "Example supporting text that is long enough to fill the third line", "", modui::icons::ic_favorite_outline,
+														ui::Switch::init(true),
+														ui::ListItem::Type::THREE_LINED
+													)
+												),
+
+											ui::FilledCard::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+												->set_size_x(MODUI_SIZE_WIDTH_FULL)
+												->set_padding(DP(15))
+												->set_spacing(DP(15))
+												->add(
+													ui::TitleText::init("Card Title"),
+
+													ui::Text::init("Reference site about Lorem Ipsum, giving information on its origins, as well as a random Lipsum generator.")
+												)
 										)
 								)
+						)
+				)
+		)->add(
+			ui::Screen::init("demo_screen2")
+				->add(
+					ui::LinearLayout::init(modui::LAYOUT_ORIENTATION_VERTICAL)
+						->set_padding(DP(10))
+						->set_spacing(DP(10))
+						->add(
+							ui::Button::init("Go Back")
+								->on_release(MODUI_CALLBACK(this) {
+									this->screen_manager->set_screen("demo_screen1");
+								}),
+
+							ui::Slider::init(0.0f, 100.0f)
 						)
 				)
 		);

@@ -62,7 +62,7 @@ namespace modui::ui
 			x = reserved_space_x + x;
 		}
 
-		if (!this->_children.empty()) this->_children[0]->calculate_size_x(x);
+		if (this->_current_screen) this->_current_screen->calculate_size_x(x);
 		this->_calculated_size.x = x;
 
 		return x;
@@ -81,7 +81,7 @@ namespace modui::ui
 			y = reserved_space_y + y;
 		}
 
-		if (!this->_children.empty()) this->_children[0]->calculate_size_y(y);
+		if (this->_current_screen) this->_current_screen->calculate_size_y(y);
 		this->_calculated_size.y = y;
 
 		return y;

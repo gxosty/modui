@@ -7,6 +7,8 @@
 
 #include <string>
 #include <vector>
+#include <queue>
+#include <mutex>
 
 namespace modui
 {
@@ -42,6 +44,7 @@ namespace modui
 		void post_render();
 
 		void add_callback_to_queue(ui::Widget* widget, ButtonInputCallback* callback);
+		void run_in_ui_thread(void(*func)());
 
 	private:
 		ImGuiWindow* _window;
@@ -62,11 +65,16 @@ namespace modui
 			std::pair<ui::Widget*, ButtonInputCallback*>
 		> _queued_callbacks;
 
+		std::mutex _queued_ui_functions_mutex;
+		std::queue<void*> _queued_ui_functions;
+
 		ImDrawListSplitter _draw_list_splitter;
 
 		ui::Widget* _window_close_button;
 		ui::Widget* _window_collapse_button;
 		void _render_window_title();
+
 		void _drain_queued_callbacks();
+		void _drain_queued_ui_functions();
 	};
 }

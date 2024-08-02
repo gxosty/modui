@@ -56,8 +56,6 @@ namespace modui::ui
 
 		Vec2 size = this->_calculated_size;
 
-		this->_update_text_size_v(size.x - this->_padding.y - this->_padding.w);
-
 		this->_pos = pos;
 
 		Vec2 text_pos = pos + (size - this->_text_size_v) / 2.0f;
@@ -75,7 +73,7 @@ namespace modui::ui
 		if (this->_text.empty() || (this->_font_size == 0.0f) || (available_width < 0.0f))
 		{
 			this->_text_size_v.x = 0.0f;
-			this->_text_size_v.y = 0.0f;
+			this->_text_size_v.y = this->_font_size;
 
 			return;
 		}

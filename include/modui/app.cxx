@@ -182,7 +182,18 @@ namespace modui
 
 	void App::render()
 	{
-		if (!this->_window_open) return;
+		this->_rendering = true;
+		modui::internal::__set_current_app(this);
+
+		this->_drain_queued_ui_functions();
+
+		if (!this->_window_open)
+		{
+			this->_drain_queued_callbacks();
+			modui::internal::__set_current_app(nullptr);
+			this->_rendering = false;
+			return;
+		}
 
 		int window_flags =
 			  ImGuiWindowFlags_NoCollapse
@@ -254,9 +265,6 @@ namespace modui
 
 		if (!ImGui::IsWindowCollapsed())
 		{
-			this->_rendering = true;
-			modui::internal::__set_current_app(this);
-
 			if (!this->_fullscreen) _render_window_title();
 
 			if (!collapsed)
@@ -267,10 +275,6 @@ namespace modui
 				this->_root_widget->calculate_size(avail_size);
 				this->_root_widget->render(cursor_pos, avail_size);
 			}
-
-			this->_drain_queued_callbacks();
-			modui::internal::__set_current_app(nullptr);
-			this->_rendering = false;
 		}
 
 		this->_window->ScrollMax.y = 0;
@@ -285,6 +289,10 @@ namespace modui
 		}
 
 		this->_window_pos = this->_window->Pos;
+
+		this->_drain_queued_callbacks();
+		modui::internal::__set_current_app(nullptr);
+		this->_rendering = false;
 	}
 
 	void App::post_render()
@@ -297,6 +305,12 @@ namespace modui
 	void App::add_callback_to_queue(ui::Widget* widget, ButtonInputCallback* callback)
 	{
 		this->_queued_callbacks.emplace_back(widget, callback);
+	}
+
+	void App::run_in_ui_thread(void(*func)())
+	{
+		std::lock_guard<std::mutex> lock(this->_queued_ui_functions_mutex);
+		this->_queued_ui_functions.push(reinterpret_cast<void*>(func));
 	}
 
 	ThemeManager& App::get_theme_manager()
@@ -371,5 +385,17 @@ namespace modui
 		}
 
 		this->_queued_callbacks.clear();
+	}
+
+	void App::_drain_queued_ui_functions()
+	{
+		if (this->_queued_ui_functions.empty()) return;
+
+		std::lock_guard<std::mutex> lock(this->_queued_ui_functions_mutex);
+
+		do {
+			reinterpret_cast<void(*)()>(this->_queued_ui_functions.front())();
+			this->_queued_ui_functions.pop();
+		} while(!this->_queued_ui_functions.empty());
 	}
 }
