@@ -22,8 +22,12 @@ namespace modui::ui
 		virtual Widget* remove(Widget* widget);
 
 		virtual void pre_render();
-		virtual Vec2 render(Vec2 pos, Vec2 reserved_space);
+		virtual void render();
 		virtual void post_render();
+
+#ifdef MODUI_SHOW_BOUNDING_BOXES
+		void render_bounding_box();
+#endif
 
 		Widget* set_id(const std::string& id);
 		const std::string& get_id();
@@ -37,6 +41,9 @@ namespace modui::ui
 		Widget* set_size_y(float y);
 		Vec2 get_size();
 		Vec2 get_calculated_size();
+
+		virtual float get_wrapped_size_x();
+		virtual float get_wrapped_size_y();
 
 		Widget* set_clickable(bool clickable);
 		bool is_clickable();
@@ -59,7 +66,6 @@ namespace modui::ui
 		}
 
 		// placeholder for inherited objects, DON'T TOUCH
-		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_orientation(modui::LayoutOrientation orientation);
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_side(modui::Side side);
 
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* on_press(ButtonInputCallback callback);
@@ -104,8 +110,13 @@ namespace modui::ui
 		MODUI_VIRTUAL_PLACEHOLDER   Widget* set_screen(const std::string& screen_name);
 
 		// For custom widgets and internal use!
-		virtual float calculate_size_x(float reserved_space_x);
-		virtual float calculate_size_y(float reserved_space_y);
+		virtual float calculate_pos_and_size_x(float bounding_box_pos_x, float bounding_box_size_x);
+		virtual float calculate_pos_and_size_y(float bounding_box_pos_y, float bounding_box_size_y);
+
+		virtual float calculate_pos_x(float bounding_box_pos_x);
+		virtual float calculate_pos_y(float bounding_box_pos_y);
+		virtual float calculate_size_x(float bounding_box_size_x);
+		virtual float calculate_size_y(float bounding_box_size_y);
 
 	protected:
 		int _id;
@@ -114,6 +125,8 @@ namespace modui::ui
 
 		Vec2 _pos;
 		Vec2 _size;
+		Vec2 _bounding_box_pos;
+		Vec2 _bounding_box_size;
 		Vec2 _calculated_size;
 		Vec4 _padding;
 		Vec2 _spacing;
@@ -122,7 +135,7 @@ namespace modui::ui
 		Theme** _theme;
 		std::vector<Widget*> _children;
 
-		Vec2 calculate_size(Vec2 reserved_space);
+		void calculate_pos_and_size(Vec2 bounding_box_pos, Vec2 bounding_box_size);
 
 		static void push_on_card();
 		static void pop_on_card();

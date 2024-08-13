@@ -3,12 +3,12 @@
 
 namespace modui::ui
 {
-	FilledCard::FilledCard(modui::LayoutOrientation orientation) : LinearLayout(orientation),
+	FilledCard::FilledCard(LinearLayout::Orientation orientation) : LinearLayout(orientation),
 		_rounding{utils::dp(16)} {}
 
-	FilledCard* FilledCard::init(modui::LayoutOrientation orientation) { return new FilledCard(orientation); }
+	FilledCard* FilledCard::init(LinearLayout::Orientation orientation) { return new FilledCard(orientation); }
 
-	Vec2 FilledCard::render(Vec2 pos, Vec2 reserved_space)
+	void FilledCard::render()
 	{
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
@@ -17,20 +17,18 @@ namespace modui::ui
 		draw_list_splitter.Split(draw_list, 2);
 		draw_list_splitter.SetCurrentChannel(draw_list, 1);
 		Widget::push_on_card();
-		auto ret = LinearLayout::render(pos, reserved_space);
+		LinearLayout::render();
 		Widget::pop_on_card();
 
 		draw_list_splitter.SetCurrentChannel(draw_list, 0);
 
 		draw_list->AddRectFilled(
-			pos,
-			ret,
+			this->_pos,
+			this->_pos + this->_calculated_size,
 			theme().surface_container_highest,
 			this->_rounding
 		);
 
 		draw_list_splitter.Merge(draw_list);
-
-		return ret;
 	}
 }

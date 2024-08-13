@@ -52,11 +52,6 @@ typedef std::function<void(modui::ui::Widget* this_widget)> ButtonInputCallback;
 
 namespace modui
 {
-	enum LayoutOrientation {
-		LAYOUT_ORIENTATION_VERTICAL,
-		LAYOUT_ORIENTATION_HORIZONTAL
-	};
-
 	enum Side {
 		SIDE_TOP,
 		SIDE_TOP_RIGHT,
@@ -91,3 +86,9 @@ namespace modui
 		static inline float map(float value, float a_min, float a_max, float b_min, float b_max) { return (value - a_min) * (b_max - b_min) / (a_max - a_min) + b_min; }
 	}
 }
+
+#ifdef MODUI_SHOW_BOUNDING_BOXES
+	#define _MODUI_SHOW_BB(w) w->render_bounding_box();
+#else
+	#define _MODUI_SHOW_BB(x) 0;
+#endif // MODUI_SHOW_BOUNDING_BOX

@@ -20,14 +20,14 @@ namespace modui::ui
 		return (ScrollLayout*)Widget::add(widget);
 	}
 
-	Vec2 ScrollLayout::render(Vec2 pos, Vec2 reserved_space)
+	void ScrollLayout::render()
 	{
 		if (!this->_children.empty())
 		{
 			Theme& theme = this->get_theme();
 
 			ImGui::PushID(this->_id);
-			ImGui::SetNextWindowPos(pos);
+			ImGui::SetNextWindowPos(this->_pos);
 
 			ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarSize, utils::dp(3));
 			ImGui::PushStyleVar(ImGuiStyleVar_ScrollbarRounding, FLT_MAX);
@@ -42,41 +42,72 @@ namespace modui::ui
 				| ImGuiWindowFlags_NoMove
 				| ImGuiWindowFlags_NoCollapse);
 
-			if (opened)
-				this->_children[0]->render(ImGui::GetCursorScreenPos(), this->_calculated_size);
+			if (opened && !this->_children.empty())
+			{
+				this->_children[0]->calculate_pos_y(ImGui::GetCursorScreenPos().y);
+				this->_children[0]->render();
+			}
 
 			ImGui::EndChild();
 			ImGui::PopStyleColor(5);
 			ImGui::PopStyleVar(2);
 			ImGui::PopID();
+			// _MODUI_SHOW_BB(this);
 		}
-
-		return pos + this->_calculated_size;
 	}
 
-	float ScrollLayout::calculate_size_x(float reserved_space_x)
+	float ScrollLayout::get_wrapped_size_x()
+	{
+		if (!this->_children.empty())
+		{
+			return this->_children[0]->get_wrapped_size_x();
+		}
+
+		return 0.0f;
+	}
+
+	float ScrollLayout::get_wrapped_size_y()
+	{
+		return 0.0f;
+	}
+
+	float ScrollLayout::calculate_pos_x(float bounding_box_pos_x)
+	{
+		auto ret = Widget::calculate_pos_x(bounding_box_pos_x);
+
+		if (!this->_children.empty())
+			this->_children[0]->calculate_pos_x(bounding_box_pos_x);
+
+		return ret;
+	}
+
+	float ScrollLayout::calculate_pos_y(float bounding_box_pos_y)
+	{
+		auto ret = Widget::calculate_pos_y(bounding_box_pos_y);
+
+		// if (!this->_children.empty())
+		// 	this->_children[0]->calculate_pos_y(ret);
+
+		return ret;
+	}
+
+	float ScrollLayout::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
+		this->_bounding_box_size.x = bounding_box_size_x;
 
 		if (x == MODUI_SIZE_WIDTH_FULL)
 		{
-			x = reserved_space_x;
+			x = bounding_box_size_x;
 			if (!this->_children.empty()) this->_children[0]->calculate_size_x(x);
 		}
 		else if (x == MODUI_SIZE_WIDTH_WRAP)
 		{
-			if (!this->_children.empty())
-			{
-				x = this->_children[0]->calculate_size_x(reserved_space_x);
-			}
-			else
-			{
-				x = 0.0f;
-			}
+			x = this->get_wrapped_size_x();
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
+			x = bounding_box_size_x + x;
 			if (!this->_children.empty()) this->_children[0]->calculate_size_x(x);
 		}
 
@@ -85,17 +116,18 @@ namespace modui::ui
 		return x;
 	}
 
-	float ScrollLayout::calculate_size_y(float reserved_space_y)
+	float ScrollLayout::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
+		this->_bounding_box_size.y = bounding_box_size_y;
 
 		if ((y == MODUI_SIZE_WIDTH_FULL) || (y == MODUI_SIZE_HEIGHT_WRAP))
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
 
 		if (!this->_children.empty()) this->_children[0]->calculate_size_y(99999.0f);

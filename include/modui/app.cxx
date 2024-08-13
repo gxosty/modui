@@ -272,8 +272,8 @@ namespace modui
 				Vec2 cursor_pos = ImGui::GetCursorScreenPos();
 				Vec2 avail_size = ImGui::GetContentRegionAvail();
 
-				this->_root_widget->calculate_size(avail_size);
-				this->_root_widget->render(cursor_pos, avail_size);
+				this->_root_widget->calculate_pos_and_size(cursor_pos, avail_size);
+				this->_root_widget->render();
 			}
 		}
 
@@ -361,16 +361,16 @@ namespace modui
 
 		if (this->_window_closable)
 		{
-			this->_window_close_button->calculate_size(Vec2(button_size, button_size));
-			this->_window_close_button->render(button_pos, {0.0f, 0.0f});
+			this->_window_close_button->calculate_pos_and_size(button_pos, Vec2(button_size, button_size));
+			this->_window_close_button->render();
 
 			button_pos.x -= utils::dp(5) + button_size;
 		}
 
 		if (this->_window_collapsable)
 		{
-			this->_window_collapse_button->calculate_size(Vec2(button_size, button_size));
-			this->_window_collapse_button->render(button_pos, {0.0f, 0.0f});
+			this->_window_collapse_button->calculate_pos_and_size(button_pos, Vec2(button_size, button_size));
+			this->_window_collapse_button->render();
 		}
 
 		if (!this->_window_collapse_button->get_state())

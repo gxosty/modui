@@ -14,7 +14,7 @@ namespace modui::ui
 		Widget* on_hold(ButtonInputCallback callback) override;
 		Widget* on_release(ButtonInputCallback callback) override;
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 
 	private:
 		ButtonInputCallback _on_press_callback;

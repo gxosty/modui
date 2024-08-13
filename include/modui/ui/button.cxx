@@ -22,7 +22,7 @@ namespace modui::ui
 		this->_text = text;
 
 		if (modui::get_current_app()->is_rendering())
-			this->_update_text_size_v();
+			this->_update_text_size();
 
 		return this;
 	}
@@ -32,7 +32,7 @@ namespace modui::ui
 		this->_font_size = font_size;
 
 		if (modui::get_current_app()->is_rendering())
-			this->_update_text_size_v();
+			this->_update_text_size();
 
 		return this;
 	}
@@ -44,21 +44,20 @@ namespace modui::ui
 
 	void Button::pre_render()
 	{
-		this->_update_text_size_v();
+		this->_update_text_size();
 
 		Widget::pre_render();
 	}
 
-	Vec2 Button::render(Vec2 pos, Vec2 reserved_space)
+	void Button::render()
 	{
 		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
 		Vec2 size = this->_calculated_size;
-		// printf("(%.2f, %.2f)\n", size.x, size.y);
-		this->_pos = pos;
+		Vec2 pos = this->_pos;
 
-		ui::BaseButton::render(pos, size);
+		ui::BaseButton::render();
 
 		this->_press_factor = utils::clamp(
 			this->_press_factor + (ImGui::GetIO().DeltaTime * MODUI_WIDGET_PRESS_TRANSITION_SPEED) * (this->_is_held ? 1.0f : -1.0f),
@@ -83,41 +82,50 @@ namespace modui::ui
 			this->_rounding
 		);
 
-		Vec2 text_pos = pos + (size - this->_text_size_v) / 2.0f;
+		Vec2 text_pos = pos + (size - this->_text_size) / 2.0f;
 
 		draw_list->AddText(ImGui::GetFont(), this->_font_size, text_pos, theme().on_primary, this->_text.c_str());
-
-		return pos + size;
 	}
 
-	void Button::_update_text_size_v()
+	void Button::_update_text_size()
 	{
 		if (this->_text.empty() || this->_font_size == 0.0f)
 		{
-			this->_text_size_v.x = 0.0f;
-			this->_text_size_v.y = 0.0f;
+			this->_text_size.x = 0.0f;
+			this->_text_size.y = 0.0f;
 
 			return;
 		}
 
-		this->_text_size_v = ImGui::GetFont()->CalcTextSizeA(this->_font_size, FLT_MAX, 0.0f, this->_text.c_str(), nullptr);
+		this->_text_size = ImGui::GetFont()->CalcTextSizeA(this->_font_size, FLT_MAX, 0.0f, this->_text.c_str(), nullptr);
 	}
 
-	float Button::calculate_size_x(float reserved_space_x)
+	float Button::get_wrapped_size_x()
+	{
+		return this->_text_size.x + utils::dp(28) * 2.0f;
+	}
+
+	float Button::get_wrapped_size_y()
+	{
+		return this->_text_size.y + utils::dp(14) * 2.0f;
+	}
+
+	float Button::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
+		this->_bounding_box_size.x = bounding_box_size_x;
 
 		if (x == MODUI_SIZE_WIDTH_FULL)
 		{
-			x = reserved_space_x;
+			x = bounding_box_size_x;
 		}
 		else if (x == MODUI_SIZE_WIDTH_WRAP)
 		{
-			x = this->_text_size_v.x + utils::dp(28) * 2.0f;
+			x = this->get_wrapped_size_x();
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
+			x = bounding_box_size_x + x;
 		}
 
 		this->_calculated_size.x = x;
@@ -125,21 +133,22 @@ namespace modui::ui
 		return x;
 	}
 
-	float Button::calculate_size_y(float reserved_space_y)
+	float Button::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
+		this->_bounding_box_size.y = bounding_box_size_y;
 
 		if (y == MODUI_SIZE_WIDTH_FULL)
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y == MODUI_SIZE_HEIGHT_WRAP)
 		{
-			y = this->_text_size_v.y + utils::dp(14) * 2.0f;
+			y = this->get_wrapped_size_y();
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
 
 		this->_calculated_size.y = y;

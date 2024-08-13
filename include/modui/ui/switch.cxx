@@ -40,7 +40,7 @@ namespace modui::ui
 		return this;
 	}
 
-	Vec2 Switch::render(Vec2 pos, Vec2 reserved_space)
+	void Switch::render()
 	{
 		const Vec2 __track_size = Vec2(utils::dp(52), utils::dp(32));
 		const float __outline_width = utils::dp(2);
@@ -49,10 +49,7 @@ namespace modui::ui
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
-		Vec2 size = this->_calculated_size;
-		this->_pos = pos;
-
-		ui::BaseButton::render(pos, size);
+		ui::BaseButton::render();
 
 		this->_state_factor = utils::clamp(
 			this->_state_factor + (ImGui::GetIO().DeltaTime * MODUI_WIDGET_PRESS_TRANSITION_SPEED) * (this->_state ? 1.0f : -1.0f),
@@ -95,7 +92,7 @@ namespace modui::ui
 			this->_state_factor
 		);
 
-		Vec2 track_pos = pos + (size - __track_size) / 2.0f;
+		Vec2 track_pos = this->_pos + (this->_calculated_size - __track_size) / 2.0f;
 		Vec2 handle_pos = track_pos + Vec2(__track_size.x - __track_size.y / 2.0f - (__track_size.x - __track_size.y) * (1.0f - this->_state_factor), __track_size.y / 2.0f);
 
 		draw_list->AddRectFilled(track_pos, track_pos + __track_size, utils::Col4to32(fill_color), MODUI_ROUNDING_FULL);
@@ -103,25 +100,34 @@ namespace modui::ui
 		draw_list->AddCircleFilled(handle_pos, handle_radius, utils::Col4to32(handle_color));
 
 		draw_list->AddCircleFilled(handle_pos, __ripple_radius, ripple_color);
-
-		return pos + size;
 	}
 
-	float Switch::calculate_size_x(float reserved_space_x)
+	float Switch::get_wrapped_size_x()
+	{
+		return utils::dp(52) + this->_padding.y + this->_padding.w;
+	}
+
+	float Switch::get_wrapped_size_y()
+	{
+		return utils::dp(32) + this->_padding.x + this->_padding.z;
+	}
+
+	float Switch::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
+		this->_bounding_box_size.x = bounding_box_size_x;
 
 		if (x == MODUI_SIZE_WIDTH_FULL)
 		{
-			x = reserved_space_x;
+			x = bounding_box_size_x;
 		}
 		else if (x == MODUI_SIZE_WIDTH_WRAP)
 		{
-			x = utils::dp(52) + this->_padding.y + this->_padding.w;
+			x = this->get_wrapped_size_x();
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
+			x = bounding_box_size_x + x;
 		}
 
 		this->_calculated_size.x = x;
@@ -129,23 +135,24 @@ namespace modui::ui
 		return x;
 	}
 
-	float Switch::calculate_size_y(float reserved_space_y)
+	float Switch::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
+		this->_bounding_box_size.y = bounding_box_size_y;
 
 		if (y == MODUI_SIZE_WIDTH_FULL)
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y == MODUI_SIZE_HEIGHT_WRAP)
 		{
-			y = utils::dp(32) + this->_padding.x + this->_padding.z; 
+			y = this->get_wrapped_size_y();
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
-
+		
 		this->_calculated_size.y = y;
 
 		return y;

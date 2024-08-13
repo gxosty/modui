@@ -18,7 +18,10 @@ namespace modui::ui
 
 		static Divider* init(Type type = Type::FULL);
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		float get_wrapped_size_x() override;
+		float get_wrapped_size_y() override;
+
+		void render() override;
 
 	private:
 		Type _type;

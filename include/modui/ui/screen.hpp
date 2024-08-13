@@ -17,10 +17,15 @@ namespace modui::ui
 		const std::string& get_name();
 
 		Screen* add(Widget* widget) override;
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 
-		float calculate_size_x(float reserved_space_x) override;
-		float calculate_size_y(float reserved_space_y) override;
+		// float get_wrapped_size_x() override;
+		// float get_wrapped_size_y() override;
+
+		float calculate_pos_x(float bounding_box_pos_x) override;
+		float calculate_pos_y(float bounding_box_pos_y) override;
+		float calculate_size_x(float bounding_box_size_x) override;
+		float calculate_size_y(float bounding_box_size_y) override;
 
 	private:
 		std::string _name;

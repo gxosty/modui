@@ -8,23 +8,32 @@ namespace modui::ui
 	class LinearLayout : public Widget
 	{
 	public:
-		LinearLayout(modui::LayoutOrientation orientation);
+		enum class Orientation
+		{
+			VERTICAL = 0,
+			HORIZONTAL
+		};
+
+	public:
+		LinearLayout(Orientation orientation);
 
 		static LinearLayout* init(
-			modui::LayoutOrientation orientation = LAYOUT_ORIENTATION_VERTICAL
+			Orientation orientation = Orientation::VERTICAL
 		);
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 
-		LinearLayout* set_orientation(modui::LayoutOrientation orientation) override;
+		LinearLayout* set_orientation(Orientation orientation);
 
-		float calculate_size_x(float reserved_space_x) override;
-		float calculate_size_y(float reserved_space_y) override;
+		float calculate_pos_x(float bounding_box_pos_x) override;
+		float calculate_pos_y(float bounding_box_pos_y) override;
+		float calculate_size_x(float bounding_box_size_x) override;
+		float calculate_size_y(float bounding_box_size_y) override;
 
 	private:
-		modui::LayoutOrientation _orientation;
+		Orientation _orientation;
 
-		Vec2 _render_vertical(Vec2 pos, Vec2 reserved_space);
-		Vec2 _render_horizontal(Vec2 pos, Vec2 reserved_space);
+		void _render_vertical();
+		void _render_horizontal();
 	};
 }

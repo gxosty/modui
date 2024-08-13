@@ -5,10 +5,11 @@
 
 namespace modui::ui
 {
-	BaseSlider::BaseSlider(float min_value, float max_value) : BaseButton(),
+	BaseSlider::BaseSlider(float min_value, float max_value, float reserved_width) : BaseButton(),
 		_on_slide_callback{MODUI_EMPTY_CALLBACK},
 		_min_value{min_value},
-		_max_value{max_value}
+		_max_value{max_value},
+		_reserved_width{reserved_width}
 	{
 		this->_clickable = true;
 		this->_value = min_value;
@@ -35,13 +36,13 @@ namespace modui::ui
 		modui::get_current_app()->add_callback_to_queue(this, &this->_on_slide_callback);
 	}
 
-	Vec2 BaseSlider::render(Vec2 pos, Vec2 reserved_space)
+	void BaseSlider::render()
 	{
 		this->_is_sliding = false;
 
-		ImGui::SetCursorScreenPos(pos);
+		ImGui::SetCursorScreenPos(this->_pos);
 		ImGui::PushID(this->_id);
-		this->_is_released = ImGui::InvisibleButton(DEFAULT_ID, reserved_space);
+		this->_is_released = ImGui::InvisibleButton(DEFAULT_ID, this->_calculated_size);
 		ImGui::PopID();
 
 		this->_is_held = ImGui::IsItemActive();
@@ -53,9 +54,9 @@ namespace modui::ui
 
 		if (this->_is_held)
 		{
-			float p_min = pos.x;
-			float p_max = pos.x + reserved_space.x;
-			float m_pos_x = ImGui::GetMousePos().x;
+			float p_min = this->_pos.x + this->_reserved_width;
+			float p_max = this->_pos.x + this->_calculated_size.x - this->_reserved_width;
+			float m_pos_x = fmin(fmax(ImGui::GetMousePos().x, p_min), p_max);
 
 			float new_value = utils::clamp(
 				utils::map(m_pos_x, p_min, p_max, this->_min_value, this->_max_value),
@@ -71,7 +72,5 @@ namespace modui::ui
 		}
 
 		if (this->_is_sliding) this->on_slide_call();
-
-		return pos;
 	}
 }

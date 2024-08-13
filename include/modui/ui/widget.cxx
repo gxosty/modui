@@ -4,6 +4,8 @@
 
 #include <cstdarg>
 
+#include <stdio.h>
+
 namespace modui::ui
 {
 	Widget::Widget() :
@@ -21,7 +23,13 @@ namespace modui::ui
 			this->_calculated_size = _size;
 		};
 
-	Widget::~Widget() {};
+	Widget::~Widget()
+	{
+		for (auto child : this->_children)
+		{
+			delete child;
+		}
+	};
 
 	Widget* Widget::init() { return new Widget(); }
 
@@ -48,7 +56,6 @@ namespace modui::ui
 			if (*i == widget)
 			{
 				this->_children.erase(i);
-				delete widget;
 				break;
 			}
 		}
@@ -126,6 +133,16 @@ namespace modui::ui
 		return this->_calculated_size;
 	}
 
+	float Widget::get_wrapped_size_x()
+	{
+		return 0.0f;
+	}
+
+	float Widget::get_wrapped_size_y()
+	{
+		return 0.0f;
+	}
+
 	Theme& Widget::get_theme()
 	{
 		return **this->_theme;
@@ -147,14 +164,19 @@ namespace modui::ui
 		}
 	}
 
-	Vec2 Widget::render(Vec2 pos, Vec2 reserved_space)
+	void Widget::render()
 	{
-		this->_pos = pos;
-		Vec2 size = this->_calculated_size;
-		ImGui::SetCursorPos(this->_pos);
-		ImGui::Dummy(size);
-		return pos + size;
+		_MODUI_SHOW_BB(this);
+		ImGui::SetCursorScreenPos(this->_pos);
+		ImGui::Dummy(this->_calculated_size);
 	}
+
+#ifdef MODUI_SHOW_BOUNDING_BOXES
+	void Widget::render_bounding_box()
+	{
+		ImGui::GetWindowDrawList()->AddRect(this->_pos, this->_pos + this->_calculated_size, this->get_theme()().inverse_surface);
+	}
+#endif
 
 	void Widget::_set_parent(core::BaseWidget* bwidget)
 	{
@@ -192,11 +214,9 @@ namespace modui::ui
 		}
 	}
 
-	Vec2 Widget::calculate_size(Vec2 reserved_space) {
-		this->calculate_size_x(reserved_space.x);
-		this->calculate_size_y(reserved_space.y);
-
-		return this->_calculated_size;
+	void Widget::calculate_pos_and_size(Vec2 bounding_box_pos, Vec2 bounding_box_size) {
+		this->calculate_pos_and_size_x(bounding_box_pos.x, bounding_box_size.x);
+		this->calculate_pos_and_size_y(bounding_box_pos.y, bounding_box_size.y);
 	}
 
 	Widget* Widget::set_clickable(bool clickable)
@@ -211,13 +231,27 @@ namespace modui::ui
 		return this->_clickable;
 	}
 
-	float Widget::calculate_size_x(float reserved_space_x)
+	float Widget::calculate_pos_and_size_x(float bounding_box_pos_x, float bounding_box_size_x)
+	{
+		float ret = this->calculate_size_x(bounding_box_size_x);
+		this->calculate_pos_x(bounding_box_pos_x);
+		return ret;
+	}
+
+	float Widget::calculate_pos_and_size_y(float bounding_box_pos_y, float bounding_box_size_y)
+	{
+		float ret = this->calculate_size_y(bounding_box_size_y);
+		this->calculate_pos_y(bounding_box_pos_y);
+		return ret;
+	}
+
+	float Widget::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
 
 		if (x == MODUI_SIZE_WIDTH_FULL)
 		{
-			x = reserved_space_x;
+			x = bounding_box_size_x;
 		}
 		else if (x == MODUI_SIZE_WIDTH_WRAP)
 		{
@@ -225,21 +259,22 @@ namespace modui::ui
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
+			x = bounding_box_size_x + x;
 		}
 
+		this->_bounding_box_size.x = bounding_box_size_x;
 		this->_calculated_size.x = x;
 
 		return x;
 	}
 
-	float Widget::calculate_size_y(float reserved_space_y)
+	float Widget::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
 
 		if (y == MODUI_SIZE_WIDTH_FULL)
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y == MODUI_SIZE_HEIGHT_WRAP)
 		{
@@ -247,12 +282,29 @@ namespace modui::ui
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
 
+		this->_bounding_box_size.y = bounding_box_size_y;
 		this->_calculated_size.y = y;
 
 		return y;
+	}
+
+	float Widget::calculate_pos_x(float bounding_box_pos_x)
+	{
+		this->_pos.x = bounding_box_pos_x;
+		this->_bounding_box_pos.x = bounding_box_pos_x;
+
+		return this->_pos.x;
+	}
+
+	float Widget::calculate_pos_y(float bounding_box_pos_y)
+	{
+		this->_pos.y = bounding_box_pos_y;
+		this->_bounding_box_pos.y = bounding_box_pos_y;
+
+		return this->_pos.y;
 	}
 
 	void Widget::push_on_card()
@@ -278,7 +330,6 @@ namespace modui::ui
 // These are less likely to interest you
 namespace modui::ui
 {
-	Widget* Widget::set_orientation(modui::LayoutOrientation orientation) { return this; }
 	Widget* Widget::set_side(modui::Side side) { return this; }
 
 	Widget* Widget::on_press(ButtonInputCallback callback) { return this; }

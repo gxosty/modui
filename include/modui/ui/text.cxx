@@ -27,7 +27,7 @@ namespace modui::ui
 		this->_text = text;
 
 		if (modui::get_current_app()->is_rendering())
-			this->_update_text_size_v();
+			this->_update_text_size();
 
 		return this;
 	}
@@ -37,49 +37,42 @@ namespace modui::ui
 		this->_font_size = font_size;
 
 		if (modui::get_current_app()->is_rendering())
-			this->_update_text_size_v();
+			this->_update_text_size();
 
 		return this;
 	}
 
 	void Text::pre_render()
 	{
-		this->_update_text_size_v();
+		this->_update_text_size();
 
 		Widget::pre_render();
 	}
 
-	Vec2 Text::render(Vec2 pos, Vec2 reserved_space)
+	void Text::render()
 	{
 		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
-		Vec2 size = this->_calculated_size;
-
-		this->_pos = pos;
-
-		Vec2 text_pos = pos + (size - this->_text_size_v) / 2.0f;
+		Vec2 text_pos = this->_pos + (this->_calculated_size - this->_text_size) / 2.0f;
 		text_pos.x += this->_padding.w;
 		text_pos.y += this->_padding.x;
 
-		draw_list->AddText(ImGui::GetFont(), this->_font_size, text_pos, this->is_on_card() ? theme().on_surface_variant : theme().on_surface, this->_text.c_str(), nullptr, size.x);
-		// draw_list->AddRect(pos, pos + size, theme().primary);
-
-		return pos + size;
+		draw_list->AddText(ImGui::GetFont(), this->_font_size, text_pos, this->is_on_card() ? theme().on_surface_variant : theme().on_surface, this->_text.c_str(), nullptr, this->_calculated_size.x);
 	}
 
-	void Text::_update_text_size_v(float available_width)
+	void Text::_update_text_size(float available_width)
 	{
 		if (this->_text.empty() || (this->_font_size == 0.0f) || (available_width < 0.0f))
 		{
-			this->_text_size_v.x = 0.0f;
-			this->_text_size_v.y = this->_font_size;
+			this->_text_size.x = 0.0f;
+			this->_text_size.y = this->_font_size;
 
 			return;
 		}
 
-		this->_text_size_v = ImGui::GetFont()->CalcTextSizeA(this->_font_size, FLT_MAX, available_width, this->_text.c_str(), nullptr);
-		this->_text_size_v.x += 1.0f;
+		this->_text_size = ImGui::GetFont()->CalcTextSizeA(this->_font_size, FLT_MAX, available_width, this->_text.c_str(), nullptr);
+		this->_text_size.x += 1.0f;
 	}
 
 	Vec2 Text::_calc_side()
@@ -87,24 +80,35 @@ namespace modui::ui
 		return Vec2(0.0f, 0.0f);
 	}
 
-	float Text::calculate_size_x(float reserved_space_x)
+	float Text::get_wrapped_size_x()
+	{
+		return this->_text_size.x + this->_padding.y + this->_padding.w;
+	}
+
+	float Text::get_wrapped_size_y()
+	{
+		return this->_text_size.y + this->_padding.x + this->_padding.z;
+	}
+
+	float Text::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
+		this->_bounding_box_size.x = bounding_box_size_x;
 
 		if (x == MODUI_SIZE_WIDTH_FULL)
 		{
-			x = reserved_space_x;
-			this->_update_text_size_v(x - this->_padding.y - this->_padding.w);
+			x = bounding_box_size_x;
+			this->_update_text_size(x - this->_padding.y - this->_padding.w);
 		}
 		else if (x == MODUI_SIZE_WIDTH_WRAP)
 		{
-			this->_update_text_size_v(reserved_space_x - this->_padding.y - this->_padding.w);
-			x = this->_text_size_v.x + this->_padding.y + this->_padding.w;
+			this->_update_text_size(bounding_box_size_x - this->_padding.y - this->_padding.w);
+			x = this->get_wrapped_size_x();
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
-			this->_update_text_size_v(x - this->_padding.y - this->_padding.w);
+			x = bounding_box_size_x + x;
+			this->_update_text_size(x - this->_padding.y - this->_padding.w);
 		}
 
 		this->_calculated_size.x = x;
@@ -112,21 +116,22 @@ namespace modui::ui
 		return x;
 	}
 
-	float Text::calculate_size_y(float reserved_space_y)
+	float Text::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
+		this->_bounding_box_size.y = bounding_box_size_y;
 
 		if (y == MODUI_SIZE_WIDTH_FULL)
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y == MODUI_SIZE_HEIGHT_WRAP)
 		{
-			y = this->_text_size_v.y + this->_padding.x + this->_padding.z;
+			y = this->get_wrapped_size_y();
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
 
 		this->_calculated_size.y = y;

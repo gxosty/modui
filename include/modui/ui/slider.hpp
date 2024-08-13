@@ -11,10 +11,13 @@ namespace modui::ui
 		Slider(float min_value, float max_value);
 		static Slider* init(float min_value, float max_value);
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 
-		float calculate_size_x(float reserved_space_x) override;
-		float calculate_size_y(float reserved_space_y) override;
+		float get_wrapped_size_x() override;
+		float get_wrapped_size_y() override;
+
+		float calculate_size_x(float bounding_box_size_x) override;
+		float calculate_size_y(float bounding_box_size_y) override;
 
 	private:
 		float _press_factor;

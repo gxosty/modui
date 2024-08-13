@@ -41,25 +41,54 @@ namespace modui::ui
 		return (ScreenManager*)ret;
 	}
 
-	Vec2 ScreenManager::render(Vec2 pos, Vec2 reserved_space)
+	void ScreenManager::render()
 	{
 		if (!this->_children.empty())
-			this->_current_screen->render(pos, this->_calculated_size);
-
-		return pos + this->_calculated_size;
+			this->_current_screen->render();
 	}
 
-	float ScreenManager::calculate_size_x(float reserved_space_x)
+	// float ScreenManager::get_wrapped_size_x()
+	// {
+	// 	return MODUI_SIZE_WIDTH_FULL;
+	// }
+
+	// float ScreenManager::get_wrapped_size_y()
+	// {
+		// return MODUI_SIZE_HEIGHT_FULL;
+	// }
+
+	float ScreenManager::calculate_pos_x(float bounding_box_pos_x)
+	{
+		auto ret = Widget::calculate_pos_x(bounding_box_pos_x);
+
+		if (this->_current_screen)
+			this->_current_screen->calculate_pos_x(ret);
+
+		return ret;
+	}
+
+	float ScreenManager::calculate_pos_y(float bounding_box_pos_y)
+	{
+		auto ret = Widget::calculate_pos_y(bounding_box_pos_y);
+
+		if (this->_current_screen)
+			this->_current_screen->calculate_pos_y(ret);
+
+		return ret;
+	}
+
+	float ScreenManager::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
+		this->_bounding_box_size.x = bounding_box_size_x;
 
 		if ((x == MODUI_SIZE_WIDTH_FULL) || (x == MODUI_SIZE_WIDTH_WRAP))
 		{
-			x = reserved_space_x;
+			x = bounding_box_size_x;
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
+			x = bounding_box_size_x + x;
 		}
 
 		if (this->_current_screen) this->_current_screen->calculate_size_x(x);
@@ -68,17 +97,18 @@ namespace modui::ui
 		return x;
 	}
 
-	float ScreenManager::calculate_size_y(float reserved_space_y)
+	float ScreenManager::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
+		this->_bounding_box_size.y = bounding_box_size_y;
 
 		if ((y == MODUI_SIZE_WIDTH_FULL) || (y == MODUI_SIZE_HEIGHT_WRAP))
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
 
 		if (this->_current_screen) this->_current_screen->calculate_size_y(y);

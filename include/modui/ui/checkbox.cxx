@@ -37,7 +37,7 @@ namespace modui::ui
 		return this;
 	}
 
-	Vec2 Checkbox::render(Vec2 pos, Vec2 reserved_space)
+	void Checkbox::render()
 	{
 		const Vec2 __box_size = Vec2(utils::dp(18), utils::dp(18));
 		const float __outline_width = utils::dp(2);
@@ -46,9 +46,9 @@ namespace modui::ui
 		Theme& theme = this->get_theme();
 
 		Vec2 size = this->_calculated_size;
-		this->_pos = pos;
+		Vec2 pos = this->_pos;
 
-		ui::BaseButton::render(pos, size);
+		ui::BaseButton::render();
 
 		this->_press_factor = utils::clamp(
 			this->_press_factor + (ImGui::GetIO().DeltaTime * MODUI_WIDGET_PRESS_TRANSITION_SPEED) * (this->_is_held ? 1.0f : -1.0f),
@@ -99,25 +99,34 @@ namespace modui::ui
 			draw_list->AddLine(l1_p1, l1_p2, theme().on_primary, __outline_width);
 			draw_list->AddLine(l2_p1, l2_p2, theme().on_primary, __outline_width);
 		}
-
-		return pos + size;
 	}
 
-	float Checkbox::calculate_size_x(float reserved_space_x)
+	float Checkbox::get_wrapped_size_x()
+	{
+		return utils::dp(40) + this->_padding.y + this->_padding.w;
+	}
+
+	float Checkbox::get_wrapped_size_y()
+	{
+		return utils::dp(40) + this->_padding.x + this->_padding.z;
+	}
+
+	float Checkbox::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
+		this->_bounding_box_size.x = bounding_box_size_x;
 
 		if (x == MODUI_SIZE_WIDTH_FULL)
 		{
-			x = reserved_space_x;
+			x = bounding_box_size_x;
 		}
 		else if (x == MODUI_SIZE_WIDTH_WRAP)
 		{
-			x = utils::dp(40) + this->_padding.y + this->_padding.w;
+			x = this->get_wrapped_size_x();
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
+			x = bounding_box_size_x + x;
 		}
 
 		this->_calculated_size.x = x;
@@ -125,21 +134,22 @@ namespace modui::ui
 		return x;
 	}
 
-	float Checkbox::calculate_size_y(float reserved_space_y)
+	float Checkbox::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
+		this->_bounding_box_size.y = bounding_box_size_y;
 
 		if (y == MODUI_SIZE_WIDTH_FULL)
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y == MODUI_SIZE_HEIGHT_WRAP)
 		{
-			y = utils::dp(40) + this->_padding.x + this->_padding.z; 
+			y = this->get_wrapped_size_y();
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
 
 		this->_calculated_size.y = y;

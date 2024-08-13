@@ -147,15 +147,15 @@ namespace modui::ui
 		Widget::pre_render();
 	}
 
-	Vec2 ListItem::render(Vec2 pos, Vec2 reserved_space)
+	void ListItem::render()
 	{
-		ImDrawList* draw_list =  ImGui::GetWindowDrawList();
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
 		Theme& theme = this->get_theme();
 
-		this->_pos = pos;
+		Vec2 pos = this->_pos;
 		Vec2 size = this->_calculated_size;
 
-		ui::BaseButton::render(pos, size);
+		ui::BaseButton::render();
 
 		this->_press_factor = utils::clamp(
 			this->_press_factor + (ImGui::GetIO().DeltaTime * MODUI_WIDGET_PRESS_TRANSITION_SPEED) * (this->_is_held ? 1.0f : -1.0f),
@@ -213,7 +213,9 @@ namespace modui::ui
 		{
 			if (this->_trailing_widget != nullptr)
 			{
-				this->_trailing_widget->render(trailing_pos, {0.0f, 0.0f});
+				this->_trailing_widget->calculate_pos_x(trailing_pos.x);
+				this->_trailing_widget->calculate_pos_y(trailing_pos.y);
+				this->_trailing_widget->render();
 			}
 			else
 			{
@@ -226,67 +228,99 @@ namespace modui::ui
 			pos + size,
 			ripple_color
 		);
-
-		return pos + size;
 	}
 
-	float ListItem::calculate_size_x(float reserved_space_x)
+	float ListItem::get_wrapped_size_x()
+	{
+		bool anything_before = false;
+		float x = utils::dp(16) * 2.0f;
+
+		if (this->_leading_icon != nullptr)
+		{
+			x += this->_leading_icon_size;
+
+			anything_before = true;
+		}
+
+		if (!this->_text.empty())
+		{
+			if (anything_before) x += utils::dp(16);
+
+			x += this->_text_size.x;
+			anything_before = true;
+		}
+
+		if (!this->_supporting_text.empty())
+		{
+			if (this->_text.empty() && anything_before) x += utils::dp(16);
+
+			x += fmax(this->_supporting_text_size.x - this->_text_size.x, 0.0f);
+			anything_before = true;
+		}
+
+		if (this->_trailing_widget != nullptr)
+		{
+			if (anything_before) x += utils::dp(16);
+			x += this->_trailing_widget->get_calculated_size().x; // widget width should be WRAP
+		}
+		else if (!this->_trailing_text.empty())
+		{
+			if (anything_before) x += utils::dp(16);
+			x += this->_trailing_text_size.x;
+		}
+
+		return fmin(x, utils::dp(240));
+	}
+
+	float ListItem::get_wrapped_size_y()
+	{
+		float y = 0.0f;
+
+		switch (this->_type)
+		{
+		case Type::ONE_LINED:
+			y = utils::dp(8) * 2.0f + this->_leading_icon_size;
+			y = fmax(y, utils::dp(56));
+			break;
+		case Type::TWO_LINED:
+			y = utils::dp(8) * 2.0f + this->_leading_icon_size;
+			y = fmax(y, utils::dp(72));
+			break;
+		case Type::THREE_LINED:
+			y = utils::dp(12) * 2.0f + this->_leading_icon_size;
+			y = fmax(y, utils::dp(88));
+			break;
+		}
+
+		return y;
+	}
+
+	float ListItem::calculate_size_x(float bounding_box_size_x)
 	{
 		float x = this->_size.x;
+		this->_bounding_box_size.x = bounding_box_size_x;
 
 		if (x == MODUI_SIZE_WIDTH_FULL)
 		{
-			x = reserved_space_x;
+			x = bounding_box_size_x;
 
 			if (this->_trailing_widget != nullptr)
 			{
-				this->_trailing_widget->calculate_size_x(0.0f);
+				this->_trailing_widget->calculate_size_x(this->_trailing_widget->get_wrapped_size_x());
 			}
 		}
 		else if (x == MODUI_SIZE_WIDTH_WRAP)
 		{
-			bool anything_before = false;
-			x = utils::dp(16) * 2.0f;
-
-			if (this->_leading_icon != nullptr)
-			{
-				x += this->_leading_icon_size;
-
-				anything_before = true;
-			}
-
-			if (!this->_text.empty())
-			{
-				if (anything_before) x += utils::dp(16);
-
-				x += this->_text_size.x;
-				anything_before = true;
-			}
-
-			if (!this->_supporting_text.empty())
-			{
-				if (this->_text.empty() && anything_before) x += utils::dp(16);
-
-				x += fmax(this->_supporting_text_size.x - this->_text_size.x, 0.0f);
-				anything_before = true;
-			}
-
 			if (this->_trailing_widget != nullptr)
 			{
-				if (anything_before) x += utils::dp(16);
-				x += this->_trailing_widget->calculate_size_x(0.0f); // widget width should be WRAP
-			}
-			else if (!this->_trailing_text.empty())
-			{
-				if (anything_before) x += utils::dp(16);
-				x += this->_trailing_text_size.x;
+				this->_trailing_widget->calculate_size_x(this->_trailing_widget->get_wrapped_size_x());
 			}
 
-			x = fmin(x, reserved_space_x);
+			x = this->get_wrapped_size_x();
 		}
 		else if (x < 0.0f)
 		{
-			x = reserved_space_x + x;
+			x = bounding_box_size_x + x;
 			this->_trailing_widget->calculate_size_x(0.0f);
 
 			if (this->_trailing_widget != nullptr)
@@ -300,41 +334,27 @@ namespace modui::ui
 		return x;
 	}
 
-	float ListItem::calculate_size_y(float reserved_space_y)
+	float ListItem::calculate_size_y(float bounding_box_size_y)
 	{
 		float y = this->_size.y;
+		this->_bounding_box_size.y = bounding_box_size_y;
 
 		if (y == MODUI_SIZE_WIDTH_FULL)
 		{
-			y = reserved_space_y;
+			y = bounding_box_size_y;
 		}
 		else if (y == MODUI_SIZE_HEIGHT_WRAP)
 		{
-			switch (this->_type)
-			{
-			case Type::ONE_LINED:
-				y = utils::dp(8) * 2.0f + this->_leading_icon_size;
-				y = fmax(y, utils::dp(56));
-				break;
-			case Type::TWO_LINED:
-				y = utils::dp(8) * 2.0f + this->_leading_icon_size;
-				y = fmax(y, utils::dp(72));
-				break;
-			case Type::THREE_LINED:
-				y = utils::dp(12) * 2.0f + this->_leading_icon_size;
-				y = fmax(y, utils::dp(88));
-				break;
-			}
+			y = this->get_wrapped_size_y();
 		}
 		else if (y < 0.0f)
 		{
-			y = reserved_space_y + y;
+			y = bounding_box_size_y + y;
 		}
 
 		if (this->_trailing_widget)
-			this->_trailing_widget->calculate_size_y(0.0f);
+			this->_trailing_widget->calculate_size_y(this->_trailing_widget->get_wrapped_size_y());
 
-		
 		this->_calculated_size.y = y;
 
 		return y;

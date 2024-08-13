@@ -8,14 +8,14 @@ namespace modui::ui
 	class BaseSlider : public BaseButton
 	{
 	public:
-		BaseSlider(float min_value, float max_value);
+		BaseSlider(float min_value, float max_value, float reserved_width = 0.0f);
 
 		Widget* set_value(float value) override;
 		float get_value();
 
 		Widget* on_slide(ButtonInputCallback callback) override;
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 
 	private:
 		ButtonInputCallback _on_slide_callback;
@@ -25,6 +25,7 @@ namespace modui::ui
 		float _min_value;
 		float _max_value;
 		float _value;
+		float _reserved_width;
 
 		virtual void on_slide_call();
 	};

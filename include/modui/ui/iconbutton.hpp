@@ -22,10 +22,13 @@ namespace modui::ui
 
 		IconButton* on_release(ButtonInputCallback callback) override;
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 
-		float calculate_size_x(float reserved_space_x) override;
-		float calculate_size_y(float reserved_space_y) override;
+		float get_wrapped_size_x() override;
+		float get_wrapped_size_y() override;
+
+		float calculate_size_x(float bounding_box_size_x) override;
+		float calculate_size_y(float bounding_box_size_y) override;
 
 	private:
 		void _update_icon();
@@ -46,7 +49,7 @@ namespace modui::ui
 		FilledIconButton(ImageID icon);
 		static FilledIconButton* init(ImageID icon = nullptr);
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 
 	private:
 	};
@@ -57,7 +60,7 @@ namespace modui::ui
 		FilledTonalIconButton(ImageID icon);
 		static FilledTonalIconButton* init(ImageID icon = nullptr);
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 	};
 
 	class OutlinedIconButton : public IconButton
@@ -66,6 +69,6 @@ namespace modui::ui
 		OutlinedIconButton(ImageID icon);
 		static OutlinedIconButton* init(ImageID icon = nullptr);
 
-		Vec2 render(Vec2 pos, Vec2 reserved_space) override;
+		void render() override;
 	};
 }
