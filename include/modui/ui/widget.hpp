@@ -2,7 +2,7 @@
 
 #include "../core/basewidget.hpp"
 #include "../core/common.hpp"
-#include "../theme.hpp"
+#include "../core/style/theme.hpp"
 
 #include <string>
 #include <vector>
@@ -133,7 +133,7 @@ namespace modui::ui
 		Vec2 _spacing;
 		bool _clickable;
 
-		Theme** _theme;
+		Theme* _theme;
 		std::vector<Widget*> _children;
 
 		void calculate_pos_and_size(Vec2 bounding_box_pos, Vec2 bounding_box_size);

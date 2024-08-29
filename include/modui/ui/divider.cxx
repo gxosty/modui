@@ -31,10 +31,10 @@ namespace modui::ui
 		switch (this->_type)
 		{
 		case Type::FULL:
-			draw_list->AddLine(pos, Vec2(pos.x + size.x, pos.y), theme().outline_variant, utils::dp(1));
+			draw_list->AddLine(pos, Vec2(pos.x + size.x, pos.y), theme(ThemeColor::OutlineVariant), utils::dp(1));
 			break;
 		case Type::INSENT:
-			draw_list->AddLine(Vec2(pos.x + utils::dp(16), pos.y), Vec2(pos.x + size.x - utils::dp(16), pos.y), theme().outline_variant, utils::dp(1));
+			draw_list->AddLine(Vec2(pos.x + utils::dp(16), pos.y), Vec2(pos.x + size.x - utils::dp(16), pos.y), theme(ThemeColor::OutlineVariant), utils::dp(1));
 			break;
 		}
 	}

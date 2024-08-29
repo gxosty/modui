@@ -22,14 +22,20 @@ endif()
 set(MODUI_SRC
 	include/stb/stb_image.cpp
 
+	include/modui/animation/animation.cxx
+	include/modui/animation/screen/screenanimation.cxx
+	include/modui/animation/screen/fadescreenanimation.cxx
+
 	include/modui/core/image/image.cxx
 	include/modui/core/image/rasterimage.cxx
 	include/modui/core/image/selectableimage.cxx
 	include/modui/core/image/vectoricon.cxx
 	include/modui/core/image/vectorimage.cxx
-
+	include/modui/core/style/theme.cxx
+	include/modui/core/style/thememanager.cxx
 	include/modui/core/common.cxx
 	include/modui/core/exceptions.cxx
+
 
 	include/modui/internal/internal_core.cxx
 	include/modui/internal/internal_utils.cxx
@@ -53,7 +59,6 @@ set(MODUI_SRC
 	include/modui/ui/widget.cxx
 
 	include/modui/icons.cxx
-	include/modui/theme.cxx
 	include/modui/app.cxx
 )
 

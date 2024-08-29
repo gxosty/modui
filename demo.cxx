@@ -26,168 +26,98 @@ class MyApp : public modui::App
 public:
 	MyApp() : modui::App("MyApp")
 	{
+		using namespace modui;
+
 		this->set_window_size(Vec2(480, 480));
 		// this->set_window_closable(false);
 		this->set_window_collapsable(true);
 		// this->set_window_fullscreen(true);
 
-		modui::Theme theme_light("theme_light");
+		Theme theme_light(0);
 
-		// theme_light().primary                   = MODUI_COLOR_HEX(0xFF'233AD1);
-		// theme_light().on_primary                = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		// theme_light().primary_container         = MODUI_COLOR_HEX(0xFF'4F65F7);
-		// theme_light().on_primary_container      = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_light[ThemeColor::Primary]                 = MODUI_COLOR_HEX(0xFF'233AD1);
+		theme_light[ThemeColor::OnPrimary]               = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_light[ThemeColor::PrimaryContainer]        = MODUI_COLOR_HEX(0xFF'4F65F7);
+		theme_light[ThemeColor::OnPrimaryContainer]      = MODUI_COLOR_HEX(0xFF'FFFFFF);
 
-		// theme_light().secondary                 = MODUI_COLOR_HEX(0xFF'515A98);
-		// theme_light().on_secondary              = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		// theme_light().secondary_container       = MODUI_COLOR_HEX(0xFF'BCC3FF);
-		// theme_light().on_secondary_container    = MODUI_COLOR_HEX(0xFF'28316C);
+		theme_light[ThemeColor::Secondary]               = MODUI_COLOR_HEX(0xFF'515A98);
+		theme_light[ThemeColor::OnSecondary]             = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_light[ThemeColor::SecondaryContainer]      = MODUI_COLOR_HEX(0xFF'BCC3FF);
+		theme_light[ThemeColor::OnSecondaryContainer]    = MODUI_COLOR_HEX(0xFF'28316C);
 
-		// theme_light().tertiary                  = MODUI_COLOR_HEX(0xFF'891595);
-		// theme_light().on_tertiary               = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		// theme_light().tertiary_container        = MODUI_COLOR_HEX(0xFF'B445BE);
-		// theme_light().on_tertiary_container     = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_light[ThemeColor::Tertiary]                = MODUI_COLOR_HEX(0xFF'891595);
+		theme_light[ThemeColor::OnTertiary]              = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_light[ThemeColor::TertiaryContainer]       = MODUI_COLOR_HEX(0xFF'B445BE);
+		theme_light[ThemeColor::OnTertiaryContainer]     = MODUI_COLOR_HEX(0xFF'FFFFFF);
 
-		// theme_light().error                     = MODUI_COLOR_HEX(0xFF'BA1A1A);
-		// theme_light().on_error                  = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		// theme_light().error_container           = MODUI_COLOR_HEX(0xFF'FFDAD6);
-		// theme_light().on_error_container        = MODUI_COLOR_HEX(0xFF'410002);
+		theme_light[ThemeColor::Error]                   = MODUI_COLOR_HEX(0xFF'BA1A1A);
+		theme_light[ThemeColor::OnError]                 = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_light[ThemeColor::ErrorContainer]          = MODUI_COLOR_HEX(0xFF'FFDAD6);
+		theme_light[ThemeColor::OnErrorContainer]        = MODUI_COLOR_HEX(0xFF'410002);
 
-		// theme_light().surface                   = MODUI_COLOR_HEX(0xFF'FBF8FF);
-		// theme_light().on_surface                = MODUI_COLOR_HEX(0xFF'1A1B24);
-		// theme_light().surface_variant           = MODUI_COLOR_HEX(0xFF'E1E1F4);
-		// theme_light().on_surface_variant        = MODUI_COLOR_HEX(0xFF'444655);
-		// theme_light().surface_container_highest = MODUI_COLOR_HEX(0xFF'E3E1ED);
-		// theme_light().surface_container_high    = MODUI_COLOR_HEX(0xFF'E8E7F3);
-		// theme_light().surface_container         = MODUI_COLOR_HEX(0xFF'EEECF9);
-		// theme_light().surface_container_low     = MODUI_COLOR_HEX(0xFF'F4F2FF);
-		// theme_light().surface_container_lowest  = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		// theme_light().inverse_surface           = MODUI_COLOR_HEX(0xFF'2F3039);
-		// theme_light().inverse_on_surface        = MODUI_COLOR_HEX(0xFF'F1EFFC);
-		// theme_light().surface_tint              = MODUI_COLOR_HEX(0xFF'364CDF);
+		theme_light[ThemeColor::Surface]                 = MODUI_COLOR_HEX(0xFF'FBF8FF);
+		theme_light[ThemeColor::OnSurface]               = MODUI_COLOR_HEX(0xFF'1A1B24);
+		theme_light[ThemeColor::SurfaceVariant]          = MODUI_COLOR_HEX(0xFF'E1E1F4);
+		theme_light[ThemeColor::OnSurfaceVariant]        = MODUI_COLOR_HEX(0xFF'444655);
+		theme_light[ThemeColor::SurfaceContainerHighest] = MODUI_COLOR_HEX(0xFF'E3E1ED);
+		theme_light[ThemeColor::SurfaceContainerHigh]    = MODUI_COLOR_HEX(0xFF'E8E7F3);
+		theme_light[ThemeColor::SurfaceContainer]        = MODUI_COLOR_HEX(0xFF'EEECF9);
+		theme_light[ThemeColor::SurfaceContainerLow]     = MODUI_COLOR_HEX(0xFF'F4F2FF);
+		theme_light[ThemeColor::SurfaceContainerLowest]  = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_light[ThemeColor::InverseSurface]          = MODUI_COLOR_HEX(0xFF'2F3039);
+		theme_light[ThemeColor::InverseOnSurface]        = MODUI_COLOR_HEX(0xFF'F1EFFC);
+		theme_light[ThemeColor::SurfaceTint]             = MODUI_COLOR_HEX(0xFF'364CDF);
 
-		// theme_light().outline                   = MODUI_COLOR_HEX(0xFF'757687);
-		// theme_light().outline_variant           = MODUI_COLOR_HEX(0xFF'C5C5D8);
-
-		theme_light().primary                   = MODUI_COLOR_HEX(0xFF'006A6A);
-		theme_light().on_primary                = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		theme_light().primary_container         = MODUI_COLOR_HEX(0xFF'9CF1F0);
-		theme_light().on_primary_container      = MODUI_COLOR_HEX(0xFF'002020);
-
-		theme_light().secondary                 = MODUI_COLOR_HEX(0xFF'4A6363);
-		theme_light().on_secondary              = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		theme_light().secondary_container       = MODUI_COLOR_HEX(0xFF'CCE8E7);
-		theme_light().on_secondary_container    = MODUI_COLOR_HEX(0xFF'051F1F);
-
-		theme_light().tertiary                  = MODUI_COLOR_HEX(0xFF'4B607C);
-		theme_light().on_tertiary               = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		theme_light().tertiary_container        = MODUI_COLOR_HEX(0xFF'D3E4FF);
-		theme_light().on_tertiary_container     = MODUI_COLOR_HEX(0xFF'041C35);
-
-		theme_light().error                     = MODUI_COLOR_HEX(0xFF'BA1A1A);
-		theme_light().on_error                  = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		theme_light().error_container           = MODUI_COLOR_HEX(0xFF'FFDAD6);
-		theme_light().on_error_container        = MODUI_COLOR_HEX(0xFF'410002);
-
-		theme_light().surface                   = MODUI_COLOR_HEX(0xFF'F4FBFA);
-		theme_light().on_surface                = MODUI_COLOR_HEX(0xFF'161D1D);
-		theme_light().surface_variant           = MODUI_COLOR_HEX(0xFF'DAE5E4);
-		theme_light().on_surface_variant        = MODUI_COLOR_HEX(0xFF'3F4948);
-		theme_light().surface_container_highest = MODUI_COLOR_HEX(0xFF'DDE4E3);
-		theme_light().surface_container_high    = MODUI_COLOR_HEX(0xFF'E3E9E9);
-		theme_light().surface_container         = MODUI_COLOR_HEX(0xFF'E9EFEE);
-		theme_light().surface_container_low     = MODUI_COLOR_HEX(0xFF'EFF5F4);
-		theme_light().surface_container_lowest  = MODUI_COLOR_HEX(0xFF'FFFFFF);
-		theme_light().inverse_surface           = MODUI_COLOR_HEX(0xFF'2B3231);
-		theme_light().inverse_on_surface        = MODUI_COLOR_HEX(0xFF'ECF2F1);
-		theme_light().surface_tint              = MODUI_COLOR_HEX(0xFF'006A6A);
-
-		theme_light().outline                   = MODUI_COLOR_HEX(0xFF'6F7979);
-		theme_light().outline_variant           = MODUI_COLOR_HEX(0xFF'BEC9C8);
+		theme_light[ThemeColor::Outline]                 = MODUI_COLOR_HEX(0xFF'757687);
+		theme_light[ThemeColor::OutlineVariant]          = MODUI_COLOR_HEX(0xFF'C5C5D8);
 
 		this->get_theme_manager().add(theme_light);
 
-		modui::Theme theme_dark("theme_dark");
+		modui::Theme theme_dark(1);
 
-		// theme_dark().primary                   = MODUI_COLOR_HEX(0xFF'BCC3FF);
-		// theme_dark().on_primary                = MODUI_COLOR_HEX(0xFF'001A98);
-		// theme_dark().primary_container         = MODUI_COLOR_HEX(0xFF'4F64F6);
-		// theme_dark().on_primary_container      = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_dark[ThemeColor::Primary]                 = MODUI_COLOR_HEX(0xFF'BCC3FF);
+		theme_dark[ThemeColor::OnPrimary]               = MODUI_COLOR_HEX(0xFF'001A98);
+		theme_dark[ThemeColor::PrimaryContainer]        = MODUI_COLOR_HEX(0xFF'4F64F6);
+		theme_dark[ThemeColor::OnPrimaryContainer]      = MODUI_COLOR_HEX(0xFF'FFFFFF);
 
-		// theme_dark().secondary                 = MODUI_COLOR_HEX(0xFF'BCC3FF);
-		// theme_dark().on_secondary              = MODUI_COLOR_HEX(0xFF'222B66);
-		// theme_dark().secondary_container       = MODUI_COLOR_HEX(0xFF'323A76);
-		// theme_dark().on_secondary_container    = MODUI_COLOR_HEX(0xFF'CED2FF);
+		theme_dark[ThemeColor::Secondary]               = MODUI_COLOR_HEX(0xFF'BCC3FF);
+		theme_dark[ThemeColor::OnSecondary]             = MODUI_COLOR_HEX(0xFF'222B66);
+		theme_dark[ThemeColor::SecondaryContainer]      = MODUI_COLOR_HEX(0xFF'323A76);
+		theme_dark[ThemeColor::OnSecondaryContainer]    = MODUI_COLOR_HEX(0xFF'CED2FF);
 
-		// theme_dark().tertiary                  = MODUI_COLOR_HEX(0xFF'FFA9FF);
-		// theme_dark().on_tertiary               = MODUI_COLOR_HEX(0xFF'590062);
-		// theme_dark().tertiary_container        = MODUI_COLOR_HEX(0xFF'B344BD);
-		// theme_dark().on_tertiary_container     = MODUI_COLOR_HEX(0xFF'FFFFFF);
+		theme_dark[ThemeColor::Tertiary]                = MODUI_COLOR_HEX(0xFF'FFA9FF);
+		theme_dark[ThemeColor::OnTertiary]              = MODUI_COLOR_HEX(0xFF'590062);
+		theme_dark[ThemeColor::TertiaryContainer]       = MODUI_COLOR_HEX(0xFF'B344BD);
+		theme_dark[ThemeColor::OnTertiaryContainer]     = MODUI_COLOR_HEX(0xFF'FFFFFF);
 
-		// theme_dark().error                     = MODUI_COLOR_HEX(0xFF'FFB4AB);
-		// theme_dark().on_error                  = MODUI_COLOR_HEX(0xFF'690005);
-		// theme_dark().error_container           = MODUI_COLOR_HEX(0xFF'93000A);
-		// theme_dark().on_error_container        = MODUI_COLOR_HEX(0xFF'FFDAD6);
+		theme_dark[ThemeColor::Error]                   = MODUI_COLOR_HEX(0xFF'FFB4AB);
+		theme_dark[ThemeColor::OnError]                 = MODUI_COLOR_HEX(0xFF'690005);
+		theme_dark[ThemeColor::ErrorContainer]          = MODUI_COLOR_HEX(0xFF'93000A);
+		theme_dark[ThemeColor::OnErrorContainer]        = MODUI_COLOR_HEX(0xFF'FFDAD6);
 
-		// theme_dark().surface                   = MODUI_COLOR_HEX(0xFF'12131B);
-		// theme_dark().on_surface                = MODUI_COLOR_HEX(0xFF'E3E1ED);
-		// theme_dark().surface_variant           = MODUI_COLOR_HEX(0xFF'444655);
-		// theme_dark().on_surface_variant        = MODUI_COLOR_HEX(0xFF'C5C5D8);
-		// theme_dark().surface_container_highest = MODUI_COLOR_HEX(0xFF'33343D);
-		// theme_dark().surface_container_high    = MODUI_COLOR_HEX(0xFF'292932);
-		// theme_dark().surface_container         = MODUI_COLOR_HEX(0xFF'1E1F28);
-		// theme_dark().surface_container_low     = MODUI_COLOR_HEX(0xFF'1A1B24);
-		// theme_dark().surface_container_lowest  = MODUI_COLOR_HEX(0xFF'0D0E16);
-		// theme_dark().inverse_surface           = MODUI_COLOR_HEX(0xFF'E3E1ED);
-		// theme_dark().inverse_on_surface        = MODUI_COLOR_HEX(0xFF'2F3039);
-		// theme_dark().surface_tint              = MODUI_COLOR_HEX(0xFF'BCC3FF);
+		theme_dark[ThemeColor::Surface]                 = MODUI_COLOR_HEX(0xFF'12131B);
+		theme_dark[ThemeColor::OnSurface]               = MODUI_COLOR_HEX(0xFF'E3E1ED);
+		theme_dark[ThemeColor::SurfaceVariant]          = MODUI_COLOR_HEX(0xFF'444655);
+		theme_dark[ThemeColor::OnSurfaceVariant]        = MODUI_COLOR_HEX(0xFF'C5C5D8);
+		theme_dark[ThemeColor::SurfaceContainerHighest] = MODUI_COLOR_HEX(0xFF'33343D);
+		theme_dark[ThemeColor::SurfaceContainerHigh]    = MODUI_COLOR_HEX(0xFF'292932);
+		theme_dark[ThemeColor::SurfaceContainer]        = MODUI_COLOR_HEX(0xFF'1E1F28);
+		theme_dark[ThemeColor::SurfaceContainerLow]     = MODUI_COLOR_HEX(0xFF'1A1B24);
+		theme_dark[ThemeColor::SurfaceContainerLowest]  = MODUI_COLOR_HEX(0xFF'0D0E16);
+		theme_dark[ThemeColor::InverseSurface]          = MODUI_COLOR_HEX(0xFF'E3E1ED);
+		theme_dark[ThemeColor::InverseOnSurface]        = MODUI_COLOR_HEX(0xFF'2F3039);
+		theme_dark[ThemeColor::SurfaceTint]             = MODUI_COLOR_HEX(0xFF'BCC3FF);
 
-		// theme_dark().outline                   = MODUI_COLOR_HEX(0xFF'8F8FA1);
-		// theme_dark().outline_variant           = MODUI_COLOR_HEX(0xFF'444655);
-
-		theme_dark().primary                   = MODUI_COLOR_HEX(0xFF'80D5D4);
-		theme_dark().on_primary                = MODUI_COLOR_HEX(0xFF'003737);
-		theme_dark().primary_container         = MODUI_COLOR_HEX(0xFF'004F4F);
-		theme_dark().on_primary_container      = MODUI_COLOR_HEX(0xFF'9CF1F0);
-
-		theme_dark().secondary                 = MODUI_COLOR_HEX(0xFF'B0CCCB);
-		theme_dark().on_secondary              = MODUI_COLOR_HEX(0xFF'1B3534);
-		theme_dark().secondary_container       = MODUI_COLOR_HEX(0xFF'324B4B);
-		theme_dark().on_secondary_container    = MODUI_COLOR_HEX(0xFF'CCE8E7);
-
-		theme_dark().tertiary                  = MODUI_COLOR_HEX(0xFF'B3C8E8);
-		theme_dark().on_tertiary               = MODUI_COLOR_HEX(0xFF'1C314B);
-		theme_dark().tertiary_container        = MODUI_COLOR_HEX(0xFF'334863);
-		theme_dark().on_tertiary_container     = MODUI_COLOR_HEX(0xFF'D3E4FF);
-
-		theme_dark().error                     = MODUI_COLOR_HEX(0xFF'FFB4AB);
-		theme_dark().on_error                  = MODUI_COLOR_HEX(0xFF'690005);
-		theme_dark().error_container           = MODUI_COLOR_HEX(0xFF'93000A);
-		theme_dark().on_error_container        = MODUI_COLOR_HEX(0xFF'FFDAD6);
-
-		theme_dark().surface                   = MODUI_COLOR_HEX(0xFF'0E1514);
-		theme_dark().on_surface                = MODUI_COLOR_HEX(0xFF'DDE4E3);
-		theme_dark().surface_variant           = MODUI_COLOR_HEX(0xFF'3F4948);
-		theme_dark().on_surface_variant        = MODUI_COLOR_HEX(0xFF'BEC9C8);
-		theme_dark().surface_container_highest = MODUI_COLOR_HEX(0xFF'2F3636);
-		theme_dark().surface_container_high    = MODUI_COLOR_HEX(0xFF'252B2B);
-		theme_dark().surface_container         = MODUI_COLOR_HEX(0xFF'1A2121);
-		theme_dark().surface_container_low     = MODUI_COLOR_HEX(0xFF'161D1D);
-		theme_dark().surface_container_lowest  = MODUI_COLOR_HEX(0xFF'090F0F);
-		theme_dark().inverse_surface           = MODUI_COLOR_HEX(0xFF'DDE4E3);
-		theme_dark().inverse_on_surface        = MODUI_COLOR_HEX(0xFF'2B3231);
-		theme_dark().surface_tint              = MODUI_COLOR_HEX(0xFF'80D5D4);
-
-		theme_dark().outline                   = MODUI_COLOR_HEX(0xFF'889392);
-		theme_dark().outline_variant           = MODUI_COLOR_HEX(0xFF'3F4948);
+		theme_dark[ThemeColor::Outline]                 = MODUI_COLOR_HEX(0xFF'8F8FA1);
+		theme_dark[ThemeColor::OutlineVariant]          = MODUI_COLOR_HEX(0xFF'444655);
 
 		this->get_theme_manager().add(theme_dark);
-		this->set_current_theme("theme_light");
+		this->set_current_theme(0);
 	}
 
 	virtual ui::Widget* build() override
 	{
-		this->screen_manager = ui::ScreenManager::init();
+		this->screen_manager = ui::ScreenManager::init(modui::animation::FadeScreenAnimation::init());
 
 		ImageID selectable_favorite = modui::image::Image::make_selectable(
 			modui::icons::ic_favorite_outline,
@@ -222,11 +152,11 @@ public:
 														->on_release(MODUI_CALLBACK(this) {
 															if (this->dark_theme)
 															{
-																this->set_current_theme("theme_light");
+																this->set_current_theme(0);
 															}
 															else
 															{
-																this->set_current_theme("theme_dark");
+																this->set_current_theme(1);
 															}
 
 															this->dark_theme = !this->dark_theme;
@@ -291,6 +221,52 @@ public:
 														->set_size_x(DP(100))
 														->set_size_y(MODUI_SIZE_HEIGHT_FULL)
 														->set_id("slider_value")
+												),
+
+											ui::LinearLayout::init(ui::LinearLayout::Orientation::HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("BgAlpha: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+													
+													ui::Slider::init(0.0f, 1.0f)
+														->set_value(1.0f)
+														->on_slide(MODUI_CALLBACK(this) {
+															float value = ((ui::Slider*)this_widget)->get_value();
+															this->screen_manager->find_widget_by_id("slider_value2")
+																->set_text(std::to_string(value));
+
+															this->set_window_background_alpha(value);
+														}),
+
+													ui::Text::init("0")
+														->set_size_x(DP(100))
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL)
+														->set_id("slider_value2")
+												),
+
+											ui::LinearLayout::init(ui::LinearLayout::Orientation::HORIZONTAL)
+												->set_size_y(MODUI_SIZE_HEIGHT_WRAP)
+												->set_spacing(DP(10))
+												->add(
+													ui::Text::init("Alpha: ")
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL),
+													
+													ui::Slider::init(0.0f, 1.0f)
+														->set_value(1.0f)
+														->on_slide(MODUI_CALLBACK(this) {
+															float value = ((ui::Slider*)this_widget)->get_value();
+															this->screen_manager->find_widget_by_id("slider_value3")
+																->set_text(std::to_string(value));
+
+															this->set_window_alpha(value);
+														}),
+
+													ui::Text::init("0")
+														->set_size_x(DP(100))
+														->set_size_y(MODUI_SIZE_HEIGHT_FULL)
+														->set_id("slider_value3")
 												),
 
 											ui::LinearLayout::init(ui::LinearLayout::Orientation::HORIZONTAL)

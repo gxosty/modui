@@ -1,8 +1,10 @@
 #pragma once
 
 #include "core/basewidget.hpp"
+#include "core/style/theme.hpp"
+#include "core/style/thememanager.hpp"
 #include "ui/widget.hpp"
-#include "theme.hpp"
+#include "animation/animation.hpp"
 #include <imgui/imgui.h>
 
 #include <string>
@@ -29,12 +31,15 @@ namespace modui
 		App* set_window_open(bool open);
 		App* set_window_closable(bool closable);
 		App* set_window_collapsable(bool collapsable);
+		App* set_window_alpha(float window_alpha);
+		App* set_window_background_alpha(float background_window_alpha);
 
 		ThemeManager& get_theme_manager();
-		Theme& get_current_theme();
-		ImDrawListSplitter& get_draw_list_splitter();
 
-		void set_current_theme(const std::string& theme_name);
+		Theme& get_current_theme();
+		void set_current_theme(ThemeID theme_id);
+
+		ImDrawListSplitter& get_draw_list_splitter();
 
 		bool is_window_open();
 		bool is_rendering();
@@ -44,9 +49,10 @@ namespace modui
 		void post_render();
 
 		void add_callback_to_queue(ui::Widget* widget, ButtonInputCallback* callback);
+		void add_running_animation(animation::Animation* animation);
 		void run_in_ui_thread(void(*func)());
 
-	private:
+	protected:
 		ImGuiWindow* _window;
 		ui::Widget* _root_widget;
 		bool _fullscreen;
@@ -56,8 +62,12 @@ namespace modui
 		bool _window_open;
 		bool _window_closable;
 		bool _window_collapsable;
+
 		ThemeManager _theme_manager;
 		Theme* _current_theme;
+		float _window_alpha;
+		float _window_background_alpha;
+
 		bool _prerendered;
 		bool _rendering;
 
@@ -68,11 +78,14 @@ namespace modui
 		std::mutex _queued_ui_functions_mutex;
 		std::queue<void*> _queued_ui_functions;
 
+		std::vector<animation::Animation*> _running_animations;
+
 		ImDrawListSplitter _draw_list_splitter;
 
 		ui::Widget* _window_close_button;
 		ui::Widget* _window_collapse_button;
 		void _render_window_title();
+		void _update_animations();
 
 		void _drain_queued_callbacks();
 		void _drain_queued_ui_functions();

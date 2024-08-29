@@ -178,21 +178,21 @@ namespace modui::ui
 		const float text_wrap = trailing ? trailing_pos.x - utils::dp(16) - text_pos.x : 0.0f;
 		const float text_clip = trailing ? text_wrap : pos.x + size.x - utils::dp(16) - text_pos.x;
 
-		Col32 container_fill_color = theme().surface;
-		Col32 leading_icon_color = (theme().on_surface_variant & 0xFFFFFF);
-		Col32 text_color = (theme().on_surface & 0xFFFFFF);
-		Col32 supporting_text_color = theme().on_surface_variant;
-		Col32 ripple_color = (theme().on_surface & 0xFFFFFF) | (unsigned(0xFF * this->_press_factor * 0.1f) << 24);
+		Col32 container_fill_color = theme(ThemeColor::Surface);
+		Col32 supporting_text_color = theme(ThemeColor::OnSurfaceVariant);
+		Col32 ripple_color = theme[ThemeColor::OnSurface].get_alpha_applied(Theme::global_alpha * this->_press_factor * 0.1f);
+		Col32 leading_icon_color;
+		Col32 text_color;
 
 		if (this->_state)
 		{
-			text_color |= unsigned(0xFF) << 24;
-			leading_icon_color |= unsigned(0xFF) << 24;
+			text_color = theme(ThemeColor::OnSurface);
+			leading_icon_color = theme(ThemeColor::OnSurfaceVariant);
 		}
 		else
 		{
-			text_color |= unsigned(0x61) << 24;
-			leading_icon_color |= unsigned(0x61) << 24;
+			text_color = theme[ThemeColor::OnSurface].get_alpha_applied(Theme::global_alpha * 0.38f);
+			leading_icon_color = theme[ThemeColor::OnSurfaceVariant].get_alpha_applied(Theme::global_alpha * 0.38f);
 		}
 
 		if (this->_leading_icon != nullptr)

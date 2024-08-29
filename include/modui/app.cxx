@@ -38,51 +38,54 @@ namespace modui
 		_rendering{false},
 		_window_open{true},
 		_window_closable{true},
-		_window_collapsable{false}
+		_window_collapsable{false},
+		_window_alpha{1.0f},
+		_window_background_alpha{1.0f}
 	{
-		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_LIGHT)));
-		this->_theme_manager.add(Theme(std::string(DEFAULT_THEME_DARK)));
+		this->_theme_manager.add(Theme(DEFAULT_THEME_LIGHT));
+		this->_theme_manager.add(Theme(DEFAULT_THEME_DARK));
 
 		Theme& dark_theme = this->_theme_manager.get(DEFAULT_THEME_DARK);
 
-		dark_theme().primary                   = MODUI_COLOR_HEX(0xFFD0BCFF);
-		dark_theme().on_primary                = MODUI_COLOR_HEX(0xFF381E72);
-		dark_theme().primary_container         = MODUI_COLOR_HEX(0xFF4F378B);
-		dark_theme().on_primary_container      = MODUI_COLOR_HEX(0xFFEADDFF);
+		dark_theme[ThemeColor::Primary]                 = MODUI_COLOR_HEX(0xFFD0BCFF);
+		dark_theme[ThemeColor::OnPrimary]               = MODUI_COLOR_HEX(0xFF381E72);
+		dark_theme[ThemeColor::PrimaryContainer]        = MODUI_COLOR_HEX(0xFF4F378B);
+		dark_theme[ThemeColor::OnPrimaryContainer]      = MODUI_COLOR_HEX(0xFFEADDFF);
 
-		dark_theme().secondary                 = MODUI_COLOR_HEX(0xFFCCC2DC);
-		dark_theme().on_secondary              = MODUI_COLOR_HEX(0xFF332D41);
-		dark_theme().secondary_container       = MODUI_COLOR_HEX(0xFF4A4458);
-		dark_theme().on_secondary_container    = MODUI_COLOR_HEX(0xFFE8DEF8);
+		dark_theme[ThemeColor::Secondary]               = MODUI_COLOR_HEX(0xFFCCC2DC);
+		dark_theme[ThemeColor::OnSecondary]             = MODUI_COLOR_HEX(0xFF332D41);
+		dark_theme[ThemeColor::SecondaryContainer]      = MODUI_COLOR_HEX(0xFF4A4458);
+		dark_theme[ThemeColor::OnSecondaryContainer]    = MODUI_COLOR_HEX(0xFFE8DEF8);
 
-		dark_theme().tertiary                  = MODUI_COLOR_HEX(0xFFEFB8C8);
-		dark_theme().on_tertiary               = MODUI_COLOR_HEX(0xFF492532);
-		dark_theme().tertiary_container        = MODUI_COLOR_HEX(0xFF633B48);
-		dark_theme().on_tertiary_container     = MODUI_COLOR_HEX(0xFFFFD8E4);
+		dark_theme[ThemeColor::Tertiary]                = MODUI_COLOR_HEX(0xFFEFB8C8);
+		dark_theme[ThemeColor::OnTertiary]              = MODUI_COLOR_HEX(0xFF492532);
+		dark_theme[ThemeColor::TertiaryContainer]       = MODUI_COLOR_HEX(0xFF633B48);
+		dark_theme[ThemeColor::OnTertiaryContainer]     = MODUI_COLOR_HEX(0xFFFFD8E4);
 
-		dark_theme().error                     = MODUI_COLOR_HEX(0xFFF2B8B5);
-		dark_theme().on_error                  = MODUI_COLOR_HEX(0xFF601410);
-		dark_theme().error_container           = MODUI_COLOR_HEX(0xFF8C1D18);
-		dark_theme().on_error_container        = MODUI_COLOR_HEX(0xFFF9DEDC);
+		dark_theme[ThemeColor::Error]                   = MODUI_COLOR_HEX(0xFFF2B8B5);
+		dark_theme[ThemeColor::OnError]                 = MODUI_COLOR_HEX(0xFF601410);
+		dark_theme[ThemeColor::ErrorContainer]          = MODUI_COLOR_HEX(0xFF8C1D18);
+		dark_theme[ThemeColor::OnErrorContainer]        = MODUI_COLOR_HEX(0xFFF9DEDC);
 
-		dark_theme().surface                   = MODUI_COLOR_HEX(0xFF141218);
-		dark_theme().on_surface                = MODUI_COLOR_HEX(0xFFE6E0E9);
-		dark_theme().surface_variant           = MODUI_COLOR_HEX(0xFF49454F);
-		dark_theme().on_surface_variant        = MODUI_COLOR_HEX(0xFFCAC4D0);
-		dark_theme().surface_container_highest = MODUI_COLOR_HEX(0xFF36343B);
-		dark_theme().surface_container_high    = MODUI_COLOR_HEX(0xFF2B2930);
-		dark_theme().surface_container         = MODUI_COLOR_HEX(0xFF211F26);
-		dark_theme().surface_container_low     = MODUI_COLOR_HEX(0xFF1D1B20);
-		dark_theme().surface_container_lowest  = MODUI_COLOR_HEX(0xFF0F0D13);
-		dark_theme().inverse_surface           = MODUI_COLOR_HEX(0xFFE6E0E9);
-		dark_theme().inverse_on_surface        = MODUI_COLOR_HEX(0xFF322F35);
-		dark_theme().surface_tint              = MODUI_COLOR_HEX(0xFFD0BCFF);
+		dark_theme[ThemeColor::Surface]                 = MODUI_COLOR_HEX(0xFF141218);
+		dark_theme[ThemeColor::OnSurface]               = MODUI_COLOR_HEX(0xFFE6E0E9);
+		dark_theme[ThemeColor::SurfaceVariant]          = MODUI_COLOR_HEX(0xFF49454F);
+		dark_theme[ThemeColor::OnSurfaceVariant]        = MODUI_COLOR_HEX(0xFFCAC4D0);
+		dark_theme[ThemeColor::SurfaceContainerHighest] = MODUI_COLOR_HEX(0xFF36343B);
+		dark_theme[ThemeColor::SurfaceContainerHigh]    = MODUI_COLOR_HEX(0xFF2B2930);
+		dark_theme[ThemeColor::SurfaceContainer]        = MODUI_COLOR_HEX(0xFF211F26);
+		dark_theme[ThemeColor::SurfaceContainerLow]     = MODUI_COLOR_HEX(0xFF1D1B20);
+		dark_theme[ThemeColor::SurfaceContainerLowest]  = MODUI_COLOR_HEX(0xFF0F0D13);
+		dark_theme[ThemeColor::InverseSurface]          = MODUI_COLOR_HEX(0xFFE6E0E9);
+		dark_theme[ThemeColor::InverseOnSurface]        = MODUI_COLOR_HEX(0xFF322F35);
+		dark_theme[ThemeColor::SurfaceTint]             = MODUI_COLOR_HEX(0xFFD0BCFF);
 
-		dark_theme().outline                   = MODUI_COLOR_HEX(0xFF938F99);
-		dark_theme().outline_variant           = MODUI_COLOR_HEX(0xFF49454F);
+		dark_theme[ThemeColor::Outline]                 = MODUI_COLOR_HEX(0xFF938F99);
+		dark_theme[ThemeColor::OutlineVariant]          = MODUI_COLOR_HEX(0xFF49454F);
 
 		this->set_current_theme(DEFAULT_THEME_LIGHT);
 		this->_queued_callbacks.reserve(10);
+		this->_running_animations.reserve(5);
 	};
 
 	App::App(const std::string& window_title) : App()
@@ -125,6 +128,20 @@ namespace modui
 	App* App::set_window_collapsable(bool collapsable)
 	{
 		this->_window_collapsable = collapsable;
+
+		return this;
+	}
+
+	App* App::set_window_alpha(float alpha)
+	{
+		this->_window_alpha = alpha;
+
+		return this;
+	}
+
+	App* App::set_window_background_alpha(float alpha)
+	{
+		this->_window_background_alpha = alpha;
 
 		return this;
 	}
@@ -185,6 +202,7 @@ namespace modui
 		this->_rendering = true;
 		modui::internal::__set_current_app(this);
 
+		this->_update_animations();
 		this->_drain_queued_ui_functions();
 
 		if (!this->_window_open)
@@ -236,12 +254,14 @@ namespace modui
 		}
 
 		Theme& theme = this->get_current_theme();
+		float bkp_theme_alpha = Theme::global_alpha;
+		Theme::global_alpha = this->_window_alpha;
 
-		ImGui::PushStyleColor(ImGuiCol_WindowBg, theme().surface);
-		ImGui::PushStyleColor(ImGuiCol_ChildBg, theme().surface);
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, theme(ThemeColor::Surface));
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, theme(ThemeColor::Surface));
 		ImGui::PushStyleColor(ImGuiCol_ResizeGrip, 0);
 		ImGui::PushStyleColor(ImGuiCol_ResizeGripHovered, 0);
-		ImGui::PushStyleColor(ImGuiCol_ResizeGripActive, theme().secondary);
+		ImGui::PushStyleColor(ImGuiCol_ResizeGripActive, theme(ThemeColor::Secondary));
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(0.0f, 0.0f));
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -254,10 +274,12 @@ namespace modui
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0.0f, 0.0f));
 
+		ImGui::SetNextWindowBgAlpha(this->_window_background_alpha);
 		if (!ImGui::Begin(this->_window_title.c_str(), &this->_window_open, window_flags))
 		{
 			ImGui::End();
 
+			Theme::global_alpha = bkp_theme_alpha;
 			ImGui::PopStyleVar(pop_style_var_count);
 			ImGui::PopStyleColor(pop_style_col_count);
 			return;
@@ -280,6 +302,7 @@ namespace modui
 		this->_window->ScrollMax.y = 0;
 		ImGui::End();
 
+		Theme::global_alpha = bkp_theme_alpha;
 		ImGui::PopStyleVar(pop_style_var_count);
 		ImGui::PopStyleColor(pop_style_col_count);
 
@@ -307,6 +330,11 @@ namespace modui
 		this->_queued_callbacks.emplace_back(widget, callback);
 	}
 
+	void App::add_running_animation(animation::Animation* animation)
+	{
+		this->_running_animations.push_back(animation);
+	}
+
 	void App::run_in_ui_thread(void(*func)())
 	{
 		std::lock_guard<std::mutex> lock(this->_queued_ui_functions_mutex);
@@ -323,9 +351,9 @@ namespace modui
 		return *this->_current_theme;
 	}
 
-	void App::set_current_theme(const std::string& theme_name)
+	void App::set_current_theme(ThemeID theme_id)
 	{
-		this->_current_theme = &this->_theme_manager.get(theme_name);
+		this->_current_theme = &this->_theme_manager.get(theme_id);
 	}
 
 	ImDrawListSplitter& App::get_draw_list_splitter()
@@ -357,7 +385,7 @@ namespace modui
 		Vec2 title_pos = Vec2(cursor_pos.x + padding, cursor_pos.y + (title_height - font_size) / 2.0f);
 		Vec2 button_pos = Vec2(cursor_pos.x + ImGui::GetContentRegionAvail().x - button_size - padding, cursor_pos.y + (title_height - button_size) / 2.0f);
 
-		draw_list->AddText(ImGui::GetFont(), font_size, title_pos, this->get_current_theme()().primary, this->_window_title.c_str(), nullptr);
+		draw_list->AddText(ImGui::GetFont(), font_size, title_pos, this->get_current_theme()(ThemeColor::Primary), this->_window_title.c_str(), nullptr);
 
 		if (this->_window_closable)
 		{
@@ -375,6 +403,19 @@ namespace modui
 
 		if (!this->_window_collapse_button->get_state())
 			ImGui::SetCursorScreenPos(Vec2(cursor_pos.x, cursor_pos.y + title_height));
+	}
+
+	void App::_update_animations()
+	{
+		if (this->_running_animations.empty()) return;
+
+		for (int i = this->_running_animations.size() - 1; i >= 0; i--)
+		{
+			if (!this->_running_animations[i]->_update())
+			{
+				this->_running_animations.erase(this->_running_animations.begin() + i);
+			}
+		}
 	}
 
 	void App::_drain_queued_callbacks()
